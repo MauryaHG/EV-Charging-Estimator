@@ -1,3 +1,6 @@
+import holidays
+
+
 class Calculator():
     # you can choose to initialise variables here, if needed.
     def __init__(self):
@@ -23,10 +26,10 @@ class Calculator():
         time = (final_state - initial_state) / 100 * capacity / power
         return time
 
-
     # you may create some new methods at your convenience, or modify these methods, or choose not to use them.
     def is_holiday(self, start_date):
-        pass
+        aus_holidays = holidays.AUS
+        return start_date in aus_holidays
 
     def is_peak(self):
         pass
@@ -59,5 +62,3 @@ class Calculator():
 
     def calculate_solar_energy(self):
         pass
-
-
