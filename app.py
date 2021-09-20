@@ -30,6 +30,7 @@ def operation_result():
         start_date = request.form['StartDate']
         start_time = request.form['StartTime']
         charger_configuration = request.form['ChargerConfiguration']
+        post_code = request.form['PostCode']
 
         # you may change the logic as your like
         duration = calculator.get_duration(start_time)
@@ -39,16 +40,17 @@ def operation_result():
         if is_peak:
             peak_period = calculator.peak_period(start_date)
 
-        is_holiday = calculator.is_holiday(start_date)
+        is_holiday = calculator.is_holiday(start_date, post_code)
 
-        # cost = calculator.cost_calculation(initial_charge, final_charge, battery_capacity, is_peak, is_holiday)
+        cost = calculator.cost_calculation(initial_charge, final_charge, battery_capacity, is_peak, is_holiday)
 
-        # time = calculator.time_calculation(initial_charge, final_charge, battery_capacity, power)
+        time = calculator.time_calculation(initial_charge, final_charge, battery_capacity, charger_configuration)
 
         # you may change the return statement also
         
-        # values of variables can be sent to the template for rendering the webpage that users will see
-        # return render_template('calculator.html', cost = cost, time = time, calculation_success = True, form = calculator_form)
+        # values of variables can be sent to the template for rendering the webpage that users will see return
+        # render_template('calculator.html', cost = cost, time = time, calculation_success = True,
+        # form = calculator_form)
         return render_template('calculator.html', calculation_success=True, form=calculator_form)
 
     else:
