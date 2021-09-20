@@ -23,6 +23,7 @@ class Calculator():
 
     # you may add more parameters if needed, you may also modify the formula.
     def time_calculation(self, initial_state, final_state, capacity, charger_configuration):
+        int(charger_configuration)
         if charger_configuration == 1:
             power = 2
         elif charger_configuration == 2:
@@ -46,6 +47,7 @@ class Calculator():
 
     # you may create some new methods at your convenience, or modify these methods, or choose not to use them.
     def is_holiday(self, start_date, post_code):
+        int(post_code)
         # Get state from post code
         if 800 <= post_code < 1000:
             prov = 'NT'
@@ -66,7 +68,7 @@ class Calculator():
         aus_state_holidays = holidays.CountryHoliday('AUS', prov)
         return start_date in aus_state_holidays
 
-    def is_peak(self):
+    def is_peak(self, start_time):
         pass
 
     def peak_period(self, start_time):
