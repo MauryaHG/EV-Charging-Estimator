@@ -30,7 +30,8 @@ def operation_result():
         post_code = request.form['PostCode']
 
         # if valid, create calculator to calculate the time and cost
-        calculator = Calculator(battery_capacity, initial_charge, final_charge, start_date, start_time, charger_configuration, post_code)
+        calculator = Calculator(battery_capacity, initial_charge, final_charge, start_date, start_time,  post_code)
+        calculator.get_price_and_power(charger_configuration)
 
         # you may change the logic as your like
         duration = calculator.get_duration(start_time)

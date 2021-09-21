@@ -3,53 +3,63 @@ from datetime import datetime
 from time import time
 
 
-class Calculator():
+class Calculator:
     # you can choose to initialise variables here, if needed.
-    def __init__(self, battery_capacity, initial_charge, final_charge, start_date, start_time, charger_configuration, post_code):
+    def __init__(self, battery_capacity, initial_charge, final_charge, start_date, start_time, post_code):
         self.battery_capacity = battery_capacity
         self.initial_charge = initial_charge
         self.final_charge = final_charge
         self.start_date = start_date
         self.start_time = start_time
-        self.charger_configuration = int(charger_configuration)
         self.post_code = int(post_code)
+        self.base_price = 0
+        self.power = 0
+
+    def get_price_and_power(self, charger_configuration):
+        charger_configuration = int(charger_configuration)
+        if charger_configuration == 1:
+            self.base_price = 5
+            self.power = 2
+        elif charger_configuration == 2:
+            self.base_price = 7.5
+            self.power = 3.6
+        elif charger_configuration == 3:
+            self.base_price = 10
+            self.power = 7.2
+        elif charger_configuration == 4:
+            self.base_price = 12.5
+            self.power = 11
+        elif charger_configuration == 5:
+            self.base_price = 15
+            self.power = 22
+        elif charger_configuration == 6:
+            self.base_price = 20
+            self.power = 36
+        elif charger_configuration == 7:
+            self.base_price = 30
+            self.power = 90
+        elif charger_configuration == 8:
+            self.base_price = 50
+            self.power = 350
+        else:
+            raise Exception("Invalid configuration number")
 
     # you may add more parameters if needed, you may modify the formula also.
     def cost_calculation(self, initial_state, final_state, capacity, is_peak, is_holiday):
-        if is_peak:
-            base_price = 100
-        else:
-            base_price = 50
+        if not is_peak:
+            self.base_price *= 0.5
 
         if is_holiday:
             surcharge_factor = 1.1
         else:
             surcharge_factor = 1
 
-        charging_cost = (final_state - initial_state) / 100 * capacity * base_price / 100 * surcharge_factor
+        charging_cost = (final_state - initial_state) / 100 * capacity * self.base_price / 100 * surcharge_factor
         return charging_cost
 
     # you may add more parameters if needed, you may also modify the formula.
     def time_calculation(self, initial_state, final_state, capacity):
-        if self.charger_configuration == 1:
-            power = 2
-        elif self.charger_configuration == 2:
-            power = 3.6
-        elif self.charger_configuration == 3:
-            power = 7.2
-        elif self.charger_configuration == 4:
-            power = 11
-        elif self.charger_configuration == 5:
-            power = 22
-        elif self.charger_configuration == 6:
-            power = 36
-        elif self.charger_configuration == 7:
-            power = 90
-        elif self.charger_configuration == 8:
-            power = 350
-        else:
-            raise Exception("Invalid configuration number")
-        charging_time = (final_state - initial_state) / 100 * capacity / power
+        charging_time = (final_state - initial_state) / 100 * capacity / self.power
         return charging_time
 
     # you may create some new methods at your convenience, or modify these methods, or choose not to use them.
