@@ -1,16 +1,19 @@
 import holidays
-from datetime import datetime
-from time import time
+from datetime import datetime, timedelta
+
+
+def is_peak(start_datetime):
+    return datetime.strptime('06:00', '%H:%M') <= start_datetime <= datetime.strptime('18:00', '%H:%M')
 
 
 class Calculator:
     # you can choose to initialise variables here, if needed.
     def __init__(self, battery_capacity, initial_charge, final_charge, start_date, start_time, post_code):
-        self.battery_capacity = battery_capacity
-        self.initial_charge = initial_charge
-        self.final_charge = final_charge
-        self.start_date = start_date
-        self.start_time = start_time
+        self.battery_capacity = int(battery_capacity)
+        self.initial_charge = int(initial_charge)
+        self.final_charge = int(final_charge)
+        self.start_time = datetime.strptime(start_time, '%H:%M')
+        self.start_datetime = datetime.strptime(start_date + ' ' + start_time, '%d/%m/%Y %H:%M')
         self.post_code = int(post_code)
         self.base_price = 0
         self.power = 0
@@ -44,49 +47,56 @@ class Calculator:
         else:
             raise Exception("Invalid configuration number")
 
-    # you may add more parameters if needed, you may modify the formula also.
-    def cost_calculation(self, initial_state, final_state, capacity, is_peak, is_holiday):
-        if not is_peak:
-            self.base_price *= 0.5
-
-        if is_holiday:
-            surcharge_factor = 1.1
-        else:
-            surcharge_factor = 1
-
-        charging_cost = (final_state - initial_state) / 100 * capacity * self.base_price / 100 * surcharge_factor
-        return charging_cost
-
     # you may add more parameters if needed, you may also modify the formula.
-    def time_calculation(self, initial_state, final_state, capacity):
-        charging_time = (final_state - initial_state) / 100 * capacity / self.power
+    def time_calculation(self):
+        charging_time = (self.final_charge - self.initial_charge) / 100 * self.battery_capacity / self.power
         return charging_time
 
+    # you may add more parameters if needed, you may modify the formula also.
+    def cost_calculation(self, charging_time):
+        time_left = charging_time
+        charging_cost = 0
+        while time_left > 0:
+            if self.is_holiday(self.start_datetime):
+                surcharge_factor = 1.1
+            else:
+                surcharge_factor = 1
+            if is_peak(self.start_time):
+                discount_factor = 1
+            else:
+                discount_factor = 0.5
+
+            if time_left <= 1:
+                time_factor = time_left
+            else:
+                time_factor = 1
+                self.start_datetime += timedelta(hours=1)
+            charging_cost += (self.final_charge - self.initial_charge) / 100 * self.battery_capacity * self.base_price / 100 * surcharge_factor * discount_factor * time_factor
+            time_left -= 1
+        charging_cost /= charging_time
+        return charging_cost
+
     # you may create some new methods at your convenience, or modify these methods, or choose not to use them.
-    def is_holiday(self):
+    def is_holiday(self, start_datetime):
         # Get state from post code
         if 800 <= self.post_code < 1000:
-            prov = 'NT'
+            province = 'NT'
         elif 1000 <= self.post_code < 2600 or 2619 <= self.post_code < 2900 or 2921 <= self.post_code < 3000:
-            prov = 'NSW'
+            province = 'NSW'
         elif 3000 <= self.post_code < 4000 or 8000 <= self.post_code < 9000:
-            prov = 'VIC'
+            province = 'VIC'
         elif 4000 <= self.post_code < 5000 or 9000 <= self.post_code < 10000:
-            prov = 'QLD'
+            province = 'QLD'
         elif 5000 <= self.post_code < 6000:
-            prov = 'SA'
+            province = 'SA'
         elif 6000 <= self.post_code < 7000:
-            prov = 'WA'
+            province = 'WA'
         elif 7000 <= self.post_code < 8000:
-            prov = 'TAS'
+            province = 'TAS'
         else:
             raise Exception("Invalid post code")
-        aus_state_holidays = holidays.CountryHoliday('AUS', prov)
-        return self.start_date in aus_state_holidays
-
-    def is_peak(self):
-        time.strptime(self.start_time, '%X')
-        return '06:00' <= self.start_time <= '18:00'
+        aus_state_holidays = holidays.CountryHoliday('AUS', prov=province, state=None)
+        return start_datetime in aus_state_holidays or start_datetime.weekday() <= 4
 
     def peak_period(self, start_time):
         pass
