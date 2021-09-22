@@ -1,0 +1,21 @@
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  image: python:3.8-alphine
+  script:
+    - echo "Building"
+    - pip3 install --upgrade pip
+    - pip3 insall -r requirements.txt
+
+test:
+  stage: test
+  image: python:3.8-alphine
+  script:
+    - echo "Testing"
+    - pip3 insall -r requirements.txt
+    - python3 -m unittest test/pyunittest.py
+    - coverage report -m
+    - coverage html -d coverage_reports
