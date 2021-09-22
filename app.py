@@ -1,3 +1,5 @@
+import math
+
 from flask import Flask, flash
 from flask import render_template
 from flask import request
@@ -37,7 +39,9 @@ def operation_result():
         charging_time = calculator.time_calculation()
         charging_cost = calculator.cost_calculation(charging_time)
 
-        output_time = "{:.2f}".format(charging_time * 60) + " minutes"
+        hours = math.floor(charging_time)
+        minutes = charging_time * 60 % 60
+        output_time = '{} hours {:.2f} minutes'.format(hours, minutes)
         output_cost = "$" + "{:.2f}".format(charging_cost)
 
         # you may change the return statement also
