@@ -83,19 +83,45 @@ class TestCalculator(unittest.TestCase):
         self.assertTrue(calculator.is_holiday())
 
         # Test case for WA (Anzac Day, Additional)
-        calculator = Calculator("100", "50", "100", "26/04/2021", "02:00", "1", "6666")
+        calculator = Calculator("100", "1", "100", "26/04/2021", "02:00", "1", "6666")
         self.assertTrue(calculator.is_holiday())
 
         # Test case for TAS (Eight Hours Day)
-        calculator = Calculator("100", "50", "100", "08/03/2021", "02:00", "1", "7777")
+        calculator = Calculator("100", "1", "100", "08/03/2021", "02:00", "1", "7777")
         self.assertTrue(calculator.is_holiday())
 
         # Test case for a non-holiday
-        calculator = Calculator("100", "50", "100", "21/09/2021", "02:00", "1", "3168")
+        calculator = Calculator("100", "1", "100", "21/09/2021", "02:00", "1", "3168")
         self.assertFalse(calculator.is_holiday())
 
     def test_is_weekday(self):
-        pass
+        # Test case for Monday
+        calculator = Calculator("66", "1", "98", "20/09/2021", "06:28", "1", "1234")
+        self.assertTrue(calculator.is_weekday())
+
+        # Test case for Tuesday
+        calculator = Calculator("66", "1", "98", "21/09/2021", "06:28", "1", "1234")
+        self.assertTrue(calculator.is_weekday())
+
+        # Test case for Wednesday
+        calculator = Calculator("66", "1", "98", "22/09/2021", "06:28", "1", "1234")
+        self.assertTrue(calculator.is_weekday())
+
+        # Test case for Thursday
+        calculator = Calculator("66", "1", "98", "23/09/2021", "06:28", "1", "1234")
+        self.assertTrue(calculator.is_weekday())
+
+        # Test case for Friday
+        calculator = Calculator("66", "1", "98", "24/09/2021", "06:28", "1", "1234")
+        self.assertTrue(calculator.is_weekday())
+
+        # Test case for Saturday
+        calculator = Calculator("66", "1", "98", "25/09/2021", "06:28", "1", "1234")
+        self.assertFalse(calculator.is_weekday())
+
+        # Test case for Sunday
+        calculator = Calculator("66", "1", "98", "26/09/2021", "06:28", "1", "1234")
+        self.assertFalse(calculator.is_weekday())
 
     def test_cost(self):
         # Example from spec
