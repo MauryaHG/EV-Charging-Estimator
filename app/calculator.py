@@ -57,7 +57,7 @@ class Calculator:
         time_left = charging_time
         charging_cost = 0
         while time_left > 0:
-            if self.is_holiday(self.start_datetime):
+            if self.is_holiday() or self.is_weekday():
                 surcharge_factor = 1.1
             else:
                 surcharge_factor = 1
@@ -77,7 +77,7 @@ class Calculator:
         return charging_cost
 
     # you may create some new methods at your convenience, or modify these methods, or choose not to use them.
-    def is_holiday(self, start_datetime):
+    def is_holiday(self):
         # Get state from post code
         if 800 <= self.post_code < 1000:
             province = 'NT'
@@ -96,7 +96,10 @@ class Calculator:
         else:
             raise Exception("Invalid post code")
         aus_state_holidays = holidays.CountryHoliday('AUS', prov=province, state=None)
-        return start_datetime in aus_state_holidays or start_datetime.weekday() <= 4
+        return self.start_datetime in aus_state_holidays
+
+    def is_weekday(self):
+        return self.start_datetime.weekday() <= 4
 
     def peak_period(self, start_time):
         pass
