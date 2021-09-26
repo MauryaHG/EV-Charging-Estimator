@@ -8,8 +8,9 @@ class TestCalculator(unittest.TestCase):
     # you may add parameters to test methods
     # this is an example
     def test_cost(self):
-        self.calculator = Calculator("", "", "", "", "", "", "")
-        self.assertEqual(self.calculator.cost_calculation(), "")
+        # Example from spec
+        self.calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "8", "3168")
+        self.assertAlmostEqual(float(self.calculator.cost_calculation()), 27.06)
 
     # you may create test suite if needed
     if __name__ == "__main__":

@@ -8,7 +8,7 @@ def is_peak(start_datetime):
 
 class Calculator:
     # you can choose to initialise variables here, if needed.
-    def __init__(self, battery_capacity, initial_charge, final_charge, start_date, start_time, post_code, charger_configuration):
+    def __init__(self, battery_capacity, initial_charge, final_charge, start_date, start_time, charger_configuration, post_code):
         self.battery_capacity = int(battery_capacity)
         self.initial_charge = int(initial_charge)
         self.final_charge = int(final_charge)
@@ -49,6 +49,7 @@ class Calculator:
 
     # you may add more parameters if needed, you may also modify the formula.
     def time_calculation(self):
+        self.get_price_and_power()
         charging_time = (self.final_charge - self.initial_charge) / 100 * self.battery_capacity / self.power
         return charging_time
 
