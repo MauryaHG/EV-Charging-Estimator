@@ -44,8 +44,6 @@ class Calculator:
         elif self.charger_configuration == 8:
             self.base_price = 50
             self.power = 350
-        else:
-            raise Exception("Invalid configuration number")
 
     # you may add more parameters if needed, you may also modify the formula.
     def time_calculation(self):

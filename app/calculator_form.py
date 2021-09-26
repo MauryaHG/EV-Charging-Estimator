@@ -69,7 +69,7 @@ class Calculator_Form(FlaskForm):
         elif field.data == '':
             raise ValueError("Cannot fetch data")
         elif int(field.data) < 1 or int(field.data) > 8:
-            raise ValueError('Please enter a configuration number')
+            raise ValueError('Please enter a valid configuration number')
 
     # validate postcode here
     def validate_PostCode(self, field):
