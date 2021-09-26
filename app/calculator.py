@@ -8,40 +8,40 @@ def is_peak(start_datetime):
 
 class Calculator:
     # you can choose to initialise variables here, if needed.
-    def __init__(self, battery_capacity, initial_charge, final_charge, start_date, start_time, post_code):
+    def __init__(self, battery_capacity, initial_charge, final_charge, start_date, start_time, post_code, charger_configuration):
         self.battery_capacity = int(battery_capacity)
         self.initial_charge = int(initial_charge)
         self.final_charge = int(final_charge)
         self.start_time = datetime.strptime(start_time, '%H:%M')
         self.start_datetime = datetime.strptime(start_date + ' ' + start_time, '%d/%m/%Y %H:%M')
         self.post_code = int(post_code)
+        self.charger_configuration = int(charger_configuration)
         self.base_price = 0
         self.power = 0
 
-    def get_price_and_power(self, charger_configuration):
-        charger_configuration = int(charger_configuration)
-        if charger_configuration == 1:
+    def get_price_and_power(self):
+        if self.charger_configuration == 1:
             self.base_price = 5
             self.power = 2
-        elif charger_configuration == 2:
+        elif self.charger_configuration == 2:
             self.base_price = 7.5
             self.power = 3.6
-        elif charger_configuration == 3:
+        elif self.charger_configuration == 3:
             self.base_price = 10
             self.power = 7.2
-        elif charger_configuration == 4:
+        elif self.charger_configuration == 4:
             self.base_price = 12.5
             self.power = 11
-        elif charger_configuration == 5:
+        elif self.charger_configuration == 5:
             self.base_price = 15
             self.power = 22
-        elif charger_configuration == 6:
+        elif self.charger_configuration == 6:
             self.base_price = 20
             self.power = 36
-        elif charger_configuration == 7:
+        elif self.charger_configuration == 7:
             self.base_price = 30
             self.power = 90
-        elif charger_configuration == 8:
+        elif self.charger_configuration == 8:
             self.base_price = 50
             self.power = 350
         else:
@@ -53,7 +53,8 @@ class Calculator:
         return charging_time
 
     # you may add more parameters if needed, you may modify the formula also.
-    def cost_calculation(self, charging_time):
+    def cost_calculation(self):
+        charging_time = self.time_calculation()
         time_left = charging_time
         charging_cost = 0
         while time_left > 0:

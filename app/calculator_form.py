@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, TimeField
 from wtforms.validators import DataRequired, ValidationError, Optional
+from datetime import datetime
 
 
 # validation for form inputs
@@ -22,7 +23,7 @@ class Calculator_Form(FlaskForm):
             raise ValidationError('Field data is none')
         elif field.data == '':
             raise ValueError("Cannot fetch data")
-        elif field.data < 5 or field.data > 150:
+        elif int(field.data) < 5 or int(field.data) > 150:
             raise ValueError("Please enter a valid battery capacity")
 
     # validate initial charge here
@@ -33,7 +34,7 @@ class Calculator_Form(FlaskForm):
             raise ValidationError('Field data is none')
         elif field.data == '':
             raise ValueError("Cannot fetch data")
-        elif field.data > self.FinalCharge.data or field.data < 0 or field.data > 99:
+        elif int(field.data) > int(self.FinalCharge.data) or int(field.data) < 0 or int(field.data) > 99:
             raise ValueError("Initial charge data error")
 
     # validate final charge here
@@ -42,7 +43,7 @@ class Calculator_Form(FlaskForm):
             raise ValidationError('Field data is none')
         elif field.data == '':
             raise ValueError("Cannot fetch data")
-        elif field.data < self.InitialCharge.data or field.data > 100 or field.data < 1:
+        elif int(field.data) < int(self.InitialCharge.data) or int(field.data) > 100 or int(field.data) < 1:
             raise ValueError("Final charge data error")
 
     # validate start date here
@@ -51,7 +52,7 @@ class Calculator_Form(FlaskForm):
             raise ValidationError('Field data is none')
         elif field.data == '':
             raise ValueError("Cannot fetch data")
-        elif field.data < '01/07/2008':
+        elif field.data < datetime.strptime('01/07/2008', '%d/%m/%Y').date():
             raise ValueError('Please enter a date from 01/07/2008 onwards')
 
     # validate start time here
@@ -67,7 +68,7 @@ class Calculator_Form(FlaskForm):
             raise ValidationError('Field data is none')
         elif field.data == '':
             raise ValueError("Cannot fetch data")
-        elif field.data < 1 or field.data > 8:
+        elif int(field.data) < 1 or int(field.data) > 8:
             raise ValueError('Please enter a configuration number')
 
     # validate postcode here
@@ -76,5 +77,5 @@ class Calculator_Form(FlaskForm):
             raise ValidationError('Field data is none')
         elif field.data == '':
             raise ValueError("Cannot fetch data")
-        elif field.data > 9999 or field.data < 800:
+        elif int(field.data) > 9999 or int(field.data) < 800:
             raise ValueError("Please enter a valid Australian post code")
