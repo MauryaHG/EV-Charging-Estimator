@@ -94,7 +94,7 @@ class Calculator:
         elif 7000 <= self.post_code < 8000:
             province = 'TAS'
         else:
-            raise Exception("Invalid post code")
+            province = 'ACT'
         aus_state_holidays = holidays.CountryHoliday('AUS', prov=province, state=None)
         return self.start_datetime in aus_state_holidays
 

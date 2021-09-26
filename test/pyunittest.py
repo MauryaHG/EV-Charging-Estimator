@@ -53,11 +53,49 @@ class TestCalculator(unittest.TestCase):
         self.assertEqual(calculator.base_price, 50)
         self.assertEqual(calculator.power, 350)
 
-        # Test case for invalid charger configurations
+        # Test case for an invalid charger configuration smaller than 1
         calculator.charger_configuration = 0
         self.assertRaises(Exception, calculator.get_price_and_power())
+
+        # Test case for an invalid charger configuration greater than 8
         calculator.charger_configuration = 9
         self.assertRaises(Exception, calculator.get_price_and_power())
+
+    def test_is_holiday(self):
+        # Test case for ACT (Canberra Day)
+        calculator = Calculator("100", "50", "100", "08/03/2021", "02:00", "1", "2601")
+        self.assertTrue(calculator.is_holiday())
+
+        # Test case for NSW (Bank Holiday)
+        calculator = Calculator("100", "50", "100", "02/08/2021", "02:00", "1", "2666")
+        self.assertTrue(calculator.is_holiday())
+
+        # Test case for VIC (AFL Grand Final)
+        calculator = Calculator("100", "50", "100", "24/09/2021", "02:00", "1", "3123")
+        self.assertTrue(calculator.is_holiday())
+
+        # Test case for QLD (Royal Queensland Show)
+        calculator = Calculator("100", "50", "100", "11/08/2021", "02:00", "1", "4022")
+        self.assertTrue(calculator.is_holiday())
+
+        # Test case for SA (Adelaide Cup Day)
+        calculator = Calculator("100", "50", "100", "08/03/2021", "02:00", "1", "5555")
+        self.assertTrue(calculator.is_holiday())
+
+        # Test case for WA (Anzac Day, Additional)
+        calculator = Calculator("100", "50", "100", "26/04/2021", "02:00", "1", "6666")
+        self.assertTrue(calculator.is_holiday())
+
+        # Test case for TAS (Eight Hours Day)
+        calculator = Calculator("100", "50", "100", "08/03/2021", "02:00", "1", "7777")
+        self.assertTrue(calculator.is_holiday())
+
+        # Test case for a non-holiday
+        calculator = Calculator("100", "50", "100", "21/09/2021", "02:00", "1", "3168")
+        self.assertFalse(calculator.is_holiday())
+
+    def test_is_weekday(self):
+        pass
 
     def test_cost(self):
         # Example from spec
