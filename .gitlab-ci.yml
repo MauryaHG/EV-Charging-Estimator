@@ -7,14 +7,12 @@ build:
   image: python:3.8-alpine
   script:
     - echo "Building"
-    - pip3 install --upgrade pip
 
 test:
   stage: test
   image: python:3.8-alpine
   script:
     - echo "Testing"
-    - pip3 install --upgrade pip
     - pip3 install -r requirements.txt
     - pip3 install coverage
     - coverage run -m unittest test/pyunittest.py
