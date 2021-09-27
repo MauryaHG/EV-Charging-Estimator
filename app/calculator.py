@@ -51,7 +51,6 @@ class Calculator:
         charging_cost = 0
         # Calculation is done in per-minute basis
         while time_left > 0:
-            self.start_datetime += timedelta(minutes=1)
             if self.is_holiday() or self.is_weekday():
                 surcharge_factor = 1.1
             else:
@@ -62,11 +61,13 @@ class Calculator:
                 discount_factor = 0.5
             if time_left >= 1:
                 time_factor = 1 / charging_time
+                self.start_datetime += timedelta(minutes=1)
             else:
                 time_factor = time_left / charging_time
+                self.start_datetime += timedelta(seconds=60 * time_left)
             charging_cost += (self.final_charge - self.initial_charge) / 100 * self.battery_capacity * self.base_price / 100 * surcharge_factor * discount_factor * time_factor
             time_left -= 1
-        return round(charging_cost, 2)
+        return round(charging_cost, 1)
 
     def is_holiday(self):
         # Get state from post code
