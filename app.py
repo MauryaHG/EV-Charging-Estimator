@@ -38,10 +38,10 @@ def operation_result():
         charging_time = calculator.time_calculation()
         charging_cost = calculator.cost_calculation()
 
-        hours = math.floor(charging_time)
-        minutes = charging_time * 60 % 60
+        hours = math.floor(charging_time / 60)
+        minutes = charging_time % 60
         output_time = '{} hours {:.2f} minutes'.format(hours, minutes)
-        output_cost = "$" + "{:.2f}".format(charging_cost)
+        output_cost = "$" + str(charging_cost)
 
         # you may change the return statement also
 

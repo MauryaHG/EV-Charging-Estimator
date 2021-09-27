@@ -2,17 +2,12 @@ import holidays
 from datetime import datetime, timedelta
 
 
-def is_peak(start_datetime):
-    return datetime.strptime('06:00', '%H:%M') <= start_datetime <= datetime.strptime('18:00', '%H:%M')
-
-
 class Calculator:
-    # you can choose to initialise variables here, if needed.
-    def __init__(self, battery_capacity, initial_charge, final_charge, start_date, start_time, charger_configuration, post_code):
+    def __init__(self, battery_capacity, initial_charge, final_charge, start_date, start_time, charger_configuration,
+                 post_code):
         self.battery_capacity = int(battery_capacity)
         self.initial_charge = int(initial_charge)
         self.final_charge = int(final_charge)
-        self.start_time = datetime.strptime(start_time, '%H:%M')
         self.start_datetime = datetime.strptime(start_date + ' ' + start_time, '%d/%m/%Y %H:%M')
         self.post_code = int(post_code)
         self.charger_configuration = int(charger_configuration)
@@ -45,38 +40,34 @@ class Calculator:
             self.base_price = 50
             self.power = 350
 
-    # you may add more parameters if needed, you may also modify the formula.
     def time_calculation(self):
         self.get_price_and_power()
-        charging_time = (self.final_charge - self.initial_charge) / 100 * self.battery_capacity / self.power
+        charging_time = (self.final_charge - self.initial_charge) / 100 * self.battery_capacity / self.power * 60
         return charging_time
 
-    # you may add more parameters if needed, you may modify the formula also.
     def cost_calculation(self):
         charging_time = self.time_calculation()
         time_left = charging_time
         charging_cost = 0
+        # Calculation is done in per-minute basis
         while time_left > 0:
+            self.start_datetime += timedelta(minutes=1)
             if self.is_holiday() or self.is_weekday():
                 surcharge_factor = 1.1
             else:
                 surcharge_factor = 1
-            if is_peak(self.start_time):
+            if self.is_peak():
                 discount_factor = 1
             else:
                 discount_factor = 0.5
-
-            if time_left <= 1:
-                time_factor = time_left
+            if time_left >= 1:
+                time_factor = 1 / charging_time
             else:
-                time_factor = 1
-                self.start_datetime += timedelta(hours=1)
+                time_factor = time_left / charging_time
             charging_cost += (self.final_charge - self.initial_charge) / 100 * self.battery_capacity * self.base_price / 100 * surcharge_factor * discount_factor * time_factor
             time_left -= 1
-        charging_cost /= charging_time
-        return charging_cost
+        return round(charging_cost, 2)
 
-    # you may create some new methods at your convenience, or modify these methods, or choose not to use them.
     def is_holiday(self):
         # Get state from post code
         if 800 <= self.post_code < 1000:
@@ -100,6 +91,11 @@ class Calculator:
 
     def is_weekday(self):
         return self.start_datetime.weekday() <= 4
+
+    def is_peak(self):
+        lower_bound = datetime.strptime(str(self.start_datetime.date()) + ' 06:00', '%Y-%m-%d %H:%M')
+        upper_bound = datetime.strptime(str(self.start_datetime.date()) + ' 18:00', '%Y-%m-%d %H:%M')
+        return lower_bound <= self.start_datetime <= upper_bound
 
     def peak_period(self, start_time):
         pass
@@ -129,3 +125,9 @@ class Calculator:
 
     def calculate_solar_energy(self):
         pass
+
+
+# you may create test suite if needed
+if __name__ == "__main__":
+    calculator_t = Calculator("82", "20", "80", "24/09/2021", "17:00", "5", "3168")
+    calculator_t.cost_calculation()
