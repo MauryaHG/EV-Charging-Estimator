@@ -126,9 +126,3 @@ class Calculator:
 
     def calculate_solar_energy(self):
         pass
-
-
-# you may create test suite if needed
-if __name__ == "__main__":
-    calculator_t = Calculator("82", "20", "80", "24/09/2021", "17:00", "5", "3168")
-    calculator_t.cost_calculation()
