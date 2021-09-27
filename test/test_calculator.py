@@ -132,12 +132,26 @@ class TestCalculator(unittest.TestCase):
         self.assertFalse(calculator.is_weekday())
 
     def test_time_calculation(self):
-        pass
+        # Test case 27: An usual charging time that is less than 1 hour
+        calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "8", "3168")
+        self.assertAlmostEqual(calculator.time_calculation(), 0.14, 2)
+
+        # Test case 28: An usual charging time that is more than 1 hour
+        calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "5", "3168")
+        self.assertAlmostEqual(calculator.time_calculation(), 2.24, 2)
+
+        # Test case 29: An unusually small charging time
+        calculator = Calculator("82", "0", "1", "21/09/2021", "14:30", "8", "3168")
+        self.assertAlmostEqual(calculator.time_calculation(), 0.00234, 5)
+
+        # Test case 29: An unusually large charging time
+        calculator = Calculator("82", "0", "100", "21/09/2021", "14:30", "1", "3168")
+        self.assertEqual(calculator.time_calculation(), 41)
 
     def test_cost_calculation(self):
-        # Just a random example from spec, to be rewritten
+        # Just a random example from the spec, to be rewritten
         calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "8", "3168")
-        self.assertAlmostEqual(float(calculator.cost_calculation()), 27.06)
+        self.assertAlmostEqual(calculator.cost_calculation(), 27.06, 2)
 
     # you may create test suite if needed
     if __name__ == "__main__":
