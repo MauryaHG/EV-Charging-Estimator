@@ -151,7 +151,7 @@ class TestCalculator(unittest.TestCase):
     def test_cost_calculation(self):
         # Test case 31: Normal weekday charging during peak hours
         calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "8", "3168")
-        self.assertEqual(27.06, calculator.cost_calculation())
+        self.assertEqual(27.1, calculator.cost_calculation())
 
         # Test case 32: Normal weekend charging during peak hours
         calculator = Calculator("82", "20", "80", "25/09/2021", "14:30", "8", "3168")
@@ -159,7 +159,7 @@ class TestCalculator(unittest.TestCase):
 
         # Test case 33: Normal weekday charging during off-peak hours
         calculator = Calculator("82", "20", "80", "21/09/2021", "22:30", "8", "3168")
-        self.assertEqual(13.53, calculator.cost_calculation())
+        self.assertEqual(13.5, calculator.cost_calculation())
 
         # Test case 34: Normal weekend charging during off-peak hours
         calculator = Calculator("82", "20", "80", "25/09/2021", "22:30", "8", "3168")
@@ -167,15 +167,23 @@ class TestCalculator(unittest.TestCase):
 
         # Test case 35: Holiday charging during peak hours
         calculator = Calculator("82", "20", "80", "24/09/2021", "14:30", "8", "3168")
-        self.assertEqual(27.06, calculator.cost_calculation())
+        self.assertEqual(27.1, calculator.cost_calculation())
 
         # Test case 36: Holiday charging during off-peak hours
         calculator = Calculator("82", "20", "80", "24/09/2021", "22:30", "8", "3168")
-        self.assertEqual(13.53, calculator.cost_calculation())
+        self.assertEqual(13.5, calculator.cost_calculation())
 
         # Test case 37: Charging across peak & off-peak hours
         calculator = Calculator("82", "20", "80", "24/09/2021", "17:00", "5", "3168")
-        self.assertEqual(5.87, calculator.cost_calculation())
+        self.assertEqual(5.9, calculator.cost_calculation())
+
+        # Test case 38: Charging across off-peak & peak hours
+        calculator = Calculator("82", "20", "80", "24/09/2021", "05:00", "5", "3168")
+        self.assertEqual(6.3, calculator.cost_calculation())
+
+        # Test case 39: Charging spanning across multiple peak & off-peak periods and weekday & weekend
+        calculator = Calculator("82", "0", "100", "19/09/2021", "14:00", "1", "3168")
+        self.assertEqual(3.1, calculator.cost_calculation())
 
     # you may create test suite if needed
     if __name__ == "__main__":
