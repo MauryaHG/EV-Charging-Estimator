@@ -62,64 +62,72 @@ class TestCalculator(unittest.TestCase):
         self.assertRaises(Exception, calculator.get_price_and_power())
 
     def test_is_holiday(self):
-        # Test case 11: ACT (Canberra Day)
+        # Test case 11: NT (May Day)
+        calculator = Calculator("100", "50", "100", "03/05/2021", "02:00", "1", "888")
+        self.assertTrue(calculator.is_holiday())
+
+        # Test case 12: ACT (Canberra Day)
         calculator = Calculator("100", "50", "100", "08/03/2021", "02:00", "1", "2601")
         self.assertTrue(calculator.is_holiday())
 
-        # Test case 12: NSW (Bank Holiday)
+        # Test case 13: NSW (Bank Holiday)
         calculator = Calculator("100", "50", "100", "02/08/2021", "02:00", "1", "2666")
         self.assertTrue(calculator.is_holiday())
 
-        # Test case 13: VIC (AFL Grand Final)
+        # Test case 14: VIC (AFL Grand Final)
         calculator = Calculator("100", "50", "100", "24/09/2021", "02:00", "1", "3123")
         self.assertTrue(calculator.is_holiday())
 
-        # Test case 14: QLD (Royal Queensland Show)
+        # Test case 15: QLD (Royal Queensland Show)
         calculator = Calculator("100", "50", "100", "11/08/2021", "02:00", "1", "4022")
         self.assertTrue(calculator.is_holiday())
 
-        # Test case 15: SA (Adelaide Cup Day)
+        # Test case 16: SA (Adelaide Cup Day)
         calculator = Calculator("100", "50", "100", "08/03/2021", "02:00", "1", "5555")
         self.assertTrue(calculator.is_holiday())
 
-        # Test case 16: WA (Anzac Day, Additional)
+        # Test case 17: WA (Anzac Day, Additional)
         calculator = Calculator("100", "1", "100", "26/04/2021", "02:00", "1", "6666")
         self.assertTrue(calculator.is_holiday())
 
-        # Test case 17: TAS (Eight Hours Day)
+        # Test case 18: TAS (Eight Hours Day)
         calculator = Calculator("100", "1", "100", "08/03/2021", "02:00", "1", "7777")
         self.assertTrue(calculator.is_holiday())
 
-        # Test case 18: A non-holiday
+        # Test case 19: Non-holidays
         calculator = Calculator("100", "1", "100", "21/09/2021", "02:00", "1", "3168")
+        self.assertFalse(calculator.is_holiday())
+        calculator = Calculator("100", "1", "100", "01/08/2021", "02:00", "1", "4321")
+        self.assertFalse(calculator.is_holiday())
+        calculator = Calculator("100", "1", "100", "30/12/2009", "02:00", "1", "5678")
         self.assertFalse(calculator.is_holiday())
 
     def test_is_weekday(self):
-        # Test case 19: Monday
+        # Test case 20: Monday
         calculator = Calculator("66", "1", "98", "20/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
 
-        # Test case 20: Tuesday
+        # Test case 21: Tuesday
         calculator = Calculator("66", "1", "98", "21/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
 
-        # Test case 21: Wednesday
+        # Test case 22: Wednesday
         calculator = Calculator("66", "1", "98", "22/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
 
-        # Test case 22: Thursday
+        # Test case 23: Thursday
         calculator = Calculator("66", "1", "98", "23/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
 
-        # Test case 23: Friday
+        # Test case 24: Friday
         calculator = Calculator("66", "1", "98", "24/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
 
-        # Test case 24: Saturday
+        # Test case 25: Saturday
         calculator = Calculator("66", "1", "98", "25/09/2021", "06:28", "1", "1234")
         self.assertFalse(calculator.is_weekday())
 
-        # Test case 25: Sunday
+        # Test case 26: Sunday
         calculator = Calculator("66", "1", "98", "26/09/2021", "06:28", "1", "1234")
         self.assertFalse(calculator.is_weekday())
 
