@@ -3,8 +3,11 @@ import unittest
 
 
 class TestCalculator(unittest.TestCase):
+    """Unit tests for Calculator class"""
 
     def test_get_price_and_power(self):
+        """Testing for get_price_and_power()"""
+
         # Test case 1: Charger configuration 1
         calculator = Calculator("100", "50", "100", "01/02/2021", "00:00", "1", "3168")
         calculator.get_price_and_power()
@@ -62,6 +65,8 @@ class TestCalculator(unittest.TestCase):
         self.assertRaises(Exception, calculator.get_price_and_power())
 
     def test_is_holiday(self):
+        """Testing for is_holiday()"""
+
         # Test case 11: NT (May Day)
         calculator = Calculator("100", "50", "100", "03/05/2021", "02:00", "1", "888")
         self.assertTrue(calculator.is_holiday())
@@ -103,6 +108,8 @@ class TestCalculator(unittest.TestCase):
         self.assertFalse(calculator.is_holiday())
 
     def test_is_weekday(self):
+        """Testing for is_weekday()"""
+
         # Test case 20: Monday
         calculator = Calculator("66", "1", "98", "20/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
@@ -132,6 +139,8 @@ class TestCalculator(unittest.TestCase):
         self.assertFalse(calculator.is_weekday())
 
     def test_time_calculation(self):
+        """Testing for time_calculation()"""
+
         # Test case 27: An usual charging time that is less than 1 hour
         calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "8", "3168")
         self.assertAlmostEqual(8.43, calculator.time_calculation(), 2)
@@ -149,6 +158,8 @@ class TestCalculator(unittest.TestCase):
         self.assertEqual(2460, calculator.time_calculation())
 
     def test_cost_calculation(self):
+        """Testing for cost_calculation()"""
+
         # Test case 31: Normal weekday charging during peak hours
         calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "8", "3168")
         self.assertEqual(27.1, calculator.cost_calculation())

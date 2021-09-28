@@ -16,6 +16,7 @@ ev_calculator_app.config['SECRET_KEY'] = SECRET_KEY
 
 @ev_calculator_app.route('/', methods=['GET', 'POST'])
 def operation_result():
+    """Output the calculation result"""
     # request.form looks for:
     # html tags with matching "name="
 
