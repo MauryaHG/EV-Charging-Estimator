@@ -1,4 +1,5 @@
 import holidays
+import requests
 from datetime import datetime, timedelta
 
 
@@ -108,8 +109,13 @@ class Calculator:
         return lower_bound <= self.start_datetime <= upper_bound
 
     # to be acquired through API
-    def get_sun_hour(self, sun_hour):
-        pass
+    def get_sun_hour(self, state, start_date):
+        """ Get sunhours(solar isolation for a specfice date in a state)"""
+        state_id = self.get_state_id(state)
+        requestURL = "http://118.138.246.158/api/v1/weather?location="+ state_id +"&date="+ start_date
+        response = requests.get(requestURL)
+        stateJson = response.json()
+        return stateJson["sunHours"]
 
     # to be acquired through API
     def get_solar_energy_duration(self, start_time):
@@ -129,3 +135,14 @@ class Calculator:
 
     def calculate_solar_energy(self):
         pass
+
+
+    def get_state_id(self, state):
+        """Get state id for any state code"""
+        requestURL = "http://118.138.246.158/api/v1/location?postcode="+state
+        response = requests.get(requestURL)
+        stateJson = response.json()
+        properties =response.json()[0]
+        return properties["id"]
+
+
