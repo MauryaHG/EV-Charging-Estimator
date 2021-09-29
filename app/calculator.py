@@ -124,8 +124,7 @@ class Calculator:
          state: string
          start_date:string in YYYY-MM-DD format
      Output:
-         datetime object of hours of daylight for this date
-         format: HH:MM:SS
+         float of hours of daylight for this date
     """
     def get_day_light_length(self, state, start_date):
 
@@ -133,7 +132,8 @@ class Calculator:
         sunrise_time = stateJson["sunrise"]
         sunset_time = stateJson["sunset"]
         FMT = '%H:%M:%S'
-        hours = datetime.strptime(sunset_time, FMT) - datetime.strptime(sunrise_time, FMT)
+        diff = datetime.strptime(sunset_time, FMT) - datetime.strptime(sunrise_time, FMT)
+        hours = diff.total_seconds()/3600
         return hours
 
     # to be acquired through API
@@ -176,8 +176,5 @@ class Calculator:
         response = requests.get(requestURL)
         return response.json()
 
-if __name__ == '__main__':
-        calculator = Calculator("82", "0", "100", "19/09/2021", "14:00", "1", "3168")
-        print(calculator.get_day_light_length("3168","2021-08-01"))
 
 
