@@ -111,15 +111,31 @@ class Calculator:
 
     def get_sun_hour(self):
         """ Get sunhours(solar isolation for a specific date in a state)"""
-        start_date = self.start_datetime.strftime("%H:%M:%S")
-        state = str(self.post_code)
-
         stateJson = self.get_weather_data()
         return stateJson["sunHours"]
 
-    # to be acquired through API
-    def get_solar_energy_duration(self, start_time):
-        pass
+
+    def get_solar_energy_duration(self):
+        """ returns total hours of solar generation in hours"""
+        start_time = self.start_datetime
+        weather_data = self.get_weather_data()
+        FMT = '%H:%M:%S'
+        sunrise_time = datetime.strptime(weather_data["sunrise"], FMT)
+        sunset_time = datetime.strptime(weather_data["sunset"], FMT)
+        charging_time = timedelta(minutes=self.time_calculation())
+        final_time = self.start_datetime + charging_time
+
+        if start_time.time() < sunrise_time.time() and final_time <= sunset_time:
+            du = (final_time - sunrise_time)
+        elif start_time.time() >= sunrise_time.time() and final_time <= sunset_time:
+            du = charging_time
+        elif start_time.time() >= sunrise_time.time() and final_time > sunset_time:
+            du = sunset_time - start_time
+        elif start_time.time() < sunrise_time.time() and final_time > sunset_time:
+            du = self.get_day_light_length()
+        return du.seconds/3600
+
+
 
     """ 
      Returns  day light hours for a specific date in a state
@@ -156,16 +172,13 @@ class Calculator:
     def calculate_solar_energy(self):
         pass
 
-    def calculate_solar_energy_w_cc(self):
-        pass
-
     def get_state_id(self):
         """Get state id for any state code"""
         state = str(self.post_code)
         requestURL = "http://118.138.246.158/api/v1/location?postcode="+state
         response = requests.get(requestURL)
         stateJson = response.json()
-        properties =response.json()[0]
+        properties = stateJson[0]
         return properties["id"]
 
     def get_weather_data(self):
@@ -177,3 +190,6 @@ class Calculator:
         return response.json()
 
 
+if __name__ == '__main__':
+        calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "5", "3168")
+        print(calculator.get_solar_energy_duration())
