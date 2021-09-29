@@ -109,9 +109,12 @@ class Calculator:
         return lower_bound <= self.start_datetime <= upper_bound
 
 
-    def get_sun_hour(self, state, start_date):
+    def get_sun_hour(self):
         """ Get sunhours(solar isolation for a specific date in a state)"""
-        stateJson = self.get_weather_data(state, start_date)
+        start_date = self.start_datetime.strftime("%H:%M:%S")
+        state = str(self.post_code)
+
+        stateJson = self.get_weather_data()
         return stateJson["sunHours"]
 
     # to be acquired through API
@@ -120,15 +123,11 @@ class Calculator:
 
     """ 
      Returns  day light hours for a specific date in a state
-     Inputs:
-         state: string
-         start_date:string in YYYY-MM-DD format
      Output:
          float of hours of daylight for this date
     """
-    def get_day_light_length(self, state, start_date):
-
-        stateJson = self.get_weather_data(state, start_date)
+    def get_day_light_length(self):
+        stateJson = self.get_weather_data()
         sunrise_time = stateJson["sunrise"]
         sunset_time = stateJson["sunset"]
         FMT = '%H:%M:%S'
@@ -142,15 +141,12 @@ class Calculator:
 
     """ 
     Returns array list of cloud cover percentage for the day
-    Inputs:
-        state: string
-        start_date:string in YYYY-MM-DD format
     Output:
         array list [0..23] with the cloud cover value at the hour index
     """
-    def get_cloud_cover(self, state, start_date):
+    def get_cloud_cover(self):
 
-        stateJson = self.get_weather_data(state, start_date)
+        stateJson = self.get_weather_data()
         hourly_history = stateJson["hourlyWeatherHistory"]
         cc_per_hour = []
         for x in range(0,len(hourly_history)):
@@ -160,21 +156,24 @@ class Calculator:
     def calculate_solar_energy(self):
         pass
 
+    def calculate_solar_energy_w_cc(self):
+        pass
 
-    def get_state_id(self, state):
+    def get_state_id(self):
         """Get state id for any state code"""
+        state = str(self.post_code)
         requestURL = "http://118.138.246.158/api/v1/location?postcode="+state
         response = requests.get(requestURL)
         stateJson = response.json()
         properties =response.json()[0]
         return properties["id"]
 
-    def get_weather_data(self, state, start_date):
+    def get_weather_data(self):
         """Get json for state and  date from api"""
-        state_id = self.get_state_id(state)
+        start_date = datetime.strftime(self.start_datetime,"%Y-%m-%d")
+        state_id = self.get_state_id()
         requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
         response = requests.get(requestURL)
         return response.json()
-
 
 
