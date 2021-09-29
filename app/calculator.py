@@ -110,7 +110,7 @@ class Calculator:
 
     # to be acquired through API
     def get_sun_hour(self, state, start_date):
-        """ Get sunhours(solar isolation for a specfice date in a state)"""
+        """ Get sunhours(solar isolation for a specific date in a state)"""
         state_id = self.get_state_id(state)
         requestURL = "http://118.138.246.158/api/v1/weather?location="+ state_id +"&date="+ start_date
         response = requests.get(requestURL)
@@ -122,8 +122,17 @@ class Calculator:
         pass
 
     # to be acquired through API
-    def get_day_light_length(self, start_time):
-        pass
+    def get_day_light_length(self, state, start_date):
+        """ Get day light hours for a specific date in a state)"""
+        state_id = self.get_state_id(state)
+        requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
+        response = requests.get(requestURL)
+        stateJson = response.json()
+        sunrise_time = stateJson["sunrise"]
+        sunset_time = stateJson["sunset"]
+        FMT = '%H:%M:%S'
+        hours = datetime.strptime(sunset_time, FMT) - datetime.strptime(sunrise_time, FMT)
+        return hours
 
     # to be acquired through API
     def get_solar_insolation(self, solar_insolation):
@@ -144,5 +153,7 @@ class Calculator:
         stateJson = response.json()
         properties =response.json()[0]
         return properties["id"]
+
+
 
 
