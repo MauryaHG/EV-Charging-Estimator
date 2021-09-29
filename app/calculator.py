@@ -123,11 +123,12 @@ class Calculator:
 
     # to be acquired through API
     def get_day_light_length(self, state, start_date):
-        """ Get day light hours for a specific date in a state)"""
+        """ Get day light hours for a specific date in a state"""
         state_id = self.get_state_id(state)
         requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
         response = requests.get(requestURL)
         stateJson = response.json()
+
         sunrise_time = stateJson["sunrise"]
         sunset_time = stateJson["sunset"]
         FMT = '%H:%M:%S'
@@ -139,8 +140,18 @@ class Calculator:
         pass
 
     # to be acquired through API
-    def get_cloud_cover(self):
-        pass
+    def get_cloud_cover(self, state, start_date):
+        """ get array list of cloud cover percentage for the day"""
+        state_id = self.get_state_id(state)
+        requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
+        response = requests.get(requestURL)
+        stateJson = response.json()
+
+        hourly_history = stateJson["hourlyWeatherHistory"]
+        cc_per_hour = []
+        for x in range(0,len(hourly_history)):
+            cc_per_hour.append(hourly_history[x]["cloudCoverPct"])
+        return cc_per_hour
 
     def calculate_solar_energy(self):
         pass
@@ -151,6 +162,7 @@ class Calculator:
         requestURL = "http://118.138.246.158/api/v1/location?postcode="+state
         response = requests.get(requestURL)
         stateJson = response.json()
+
         properties =response.json()[0]
         return properties["id"]
 
