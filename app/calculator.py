@@ -108,27 +108,28 @@ class Calculator:
         upper_bound = datetime.strptime(str(self.start_datetime.date()) + ' 18:00', '%Y-%m-%d %H:%M')
         return lower_bound <= self.start_datetime <= upper_bound
 
-    # to be acquired through API
+
     def get_sun_hour(self, state, start_date):
         """ Get sunhours(solar isolation for a specific date in a state)"""
-        state_id = self.get_state_id(state)
-        requestURL = "http://118.138.246.158/api/v1/weather?location="+ state_id +"&date="+ start_date
-        response = requests.get(requestURL)
-        stateJson = response.json()
+        stateJson = self.get_weather_data(state, start_date)
         return stateJson["sunHours"]
 
     # to be acquired through API
     def get_solar_energy_duration(self, start_time):
         pass
 
-    # to be acquired through API
+    """ 
+     Returns  day light hours for a specific date in a state
+     Inputs:
+         state: string
+         start_date:string in YYYY-MM-DD format
+     Output:
+         datetime object of hours of daylight for this date
+         format: HH:MM:SS
+    """
     def get_day_light_length(self, state, start_date):
-        """ Get day light hours for a specific date in a state"""
-        state_id = self.get_state_id(state)
-        requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
-        response = requests.get(requestURL)
-        stateJson = response.json()
 
+        stateJson = self.get_weather_data(state, start_date)
         sunrise_time = stateJson["sunrise"]
         sunset_time = stateJson["sunset"]
         FMT = '%H:%M:%S'
@@ -139,14 +140,17 @@ class Calculator:
     def get_solar_insolation(self, solar_insolation):
         pass
 
-    # to be acquired through API
+    """ 
+    Returns array list of cloud cover percentage for the day
+    Inputs:
+        state: string
+        start_date:string in YYYY-MM-DD format
+    Output:
+        array list [0..23] with the cloud cover value at the hour index
+    """
     def get_cloud_cover(self, state, start_date):
-        """ get array list of cloud cover percentage for the day"""
-        state_id = self.get_state_id(state)
-        requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
-        response = requests.get(requestURL)
-        stateJson = response.json()
 
+        stateJson = self.get_weather_data(state, start_date)
         hourly_history = stateJson["hourlyWeatherHistory"]
         cc_per_hour = []
         for x in range(0,len(hourly_history)):
@@ -162,10 +166,18 @@ class Calculator:
         requestURL = "http://118.138.246.158/api/v1/location?postcode="+state
         response = requests.get(requestURL)
         stateJson = response.json()
-
         properties =response.json()[0]
         return properties["id"]
 
+    def get_weather_data(self, state, start_date):
+        """Get json for state and  date from api"""
+        state_id = self.get_state_id(state)
+        requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
+        response = requests.get(requestURL)
+        return response.json()
 
+if __name__ == '__main__':
+        calculator = Calculator("82", "0", "100", "19/09/2021", "14:00", "1", "3168")
+        print(calculator.get_day_light_length("3168","2021-08-01"))
 
 
