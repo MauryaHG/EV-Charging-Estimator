@@ -42,7 +42,7 @@ def operation_result():
         hours = math.floor(charging_time / 60)
         minutes = charging_time % 60
         output_time = '{} hours {:.2f} minutes'.format(hours, minutes)
-        output_cost = "$" + str(charging_cost)
+        output_cost = "$ " + str(charging_cost)
 
         # you may change the return statement also
 

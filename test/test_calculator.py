@@ -196,6 +196,6 @@ class TestCalculator(unittest.TestCase):
         calculator = Calculator("82", "0", "100", "19/09/2021", "14:00", "1", "3168")
         self.assertEqual(3.1, calculator.cost_calculation())
 
-    # you may create test suite if needed
-    if __name__ == "__main__":
-        pass
+
+if __name__ == '__main__':
+    unittest.main()
