@@ -195,7 +195,3 @@ class TestCalculator(unittest.TestCase):
         # Test case 39: Charging spanning across multiple peak & off-peak periods and weekday & weekend
         calculator = Calculator("82", "0", "100", "19/09/2021", "14:00", "1", "3168")
         self.assertEqual(3.1, calculator.cost_calculation())
-
-
-if __name__ == '__main__':
-    unittest.main()
