@@ -110,16 +110,16 @@ class Calculator:
         return lower_bound <= self.start_datetime <= upper_bound
 
 
-    def get_sun_hour(self):
+    def get_sun_hour(self,date):
         """ Get sunhours(solar isolation for a specific date in a state)"""
-        stateJson = self.get_weather_data()
+        stateJson = self.get_weather_data(date)
         return stateJson["sunHours"]
 
 
-    def get_solar_energy_duration(self):
+    def get_solar_energy_duration(self,date):
         """ returns total hours of solar generation in hours"""
         start_time = self.start_datetime
-        weather_data = self.get_weather_data()
+        weather_data = self.get_weather_data(date)
         FMT = '%H:%M:%S'
         sunrise_time = datetime.strptime(weather_data["sunrise"], FMT)
         sunset_time = datetime.strptime(weather_data["sunset"], FMT)
@@ -137,7 +137,7 @@ class Calculator:
 
         elif start_time.time() < sunrise_time.time() and final_time.time() > sunset_time.time():
             du = self.get_day_light_length()
-        return du.total_seconds()/3600
+        return du.seconds/3600
 
 
 
@@ -146,7 +146,7 @@ class Calculator:
      Output:
          float of hours of daylight for this date
     """
-    def get_day_light_length(self):
+    def get_day_light_length(self,date):
         stateJson = self.get_weather_data()
         sunrise_time = stateJson["sunrise"]
         sunset_time = stateJson["sunset"]
@@ -164,9 +164,9 @@ class Calculator:
     Output:
         array list [0..23] with the cloud cover value at the hour index
     """
-    def get_cloud_cover(self):
+    def get_cloud_cover(self,date):
 
-        stateJson = self.get_weather_data()
+        stateJson = self.get_weather_data(date)
         hourly_history = stateJson["hourlyWeatherHistory"]
         cc_per_hour = []
         for x in range(0,len(hourly_history)):
@@ -181,25 +181,33 @@ class Calculator:
         e = si*(du/dl)*50*0.2
         return e
 
-    def calculate_solar_energy_w_cc(self):
+    def calculate_solar_energy_w_cc(self,date):
         """ Get solar energy generated with cloud cover"""
         start_time = self.start_datetime
         si = self.get_sun_hour()
         dl = self.get_day_light_length()
         solar_du = self.get_solar_energy_duration()
-        cc = self.get_cloud_cover()
-        print(start_time)
-        print(solar_du)
-        print(dl)
-        for i in range(0, math.trunc(solar_du)+1):
+        cc_list = self.get_cloud_cover(date)
+        e = 0
+        times = []
+        hour = start_time.hour
+        mins = start_time.minute/60
+        times.append((hour, mins))
 
+        for i in range(1, math.trunc(solar_du)):
             time = (start_time+timedelta(hours=i*1)).time().hour
-            cc_value = cc[time]
-            print(time)
-            print(cc_value)
-            total_du = self.time_calculation()/60
+            times.append((time,1))
 
-        e = si*(1/dl)*50*0.2
+        time = (start_time + timedelta(hours=math.trunc(solar_du), minutes=solar_du % 1))
+        hour = time.hour
+        mins = time.minute / 60
+        times.append((hour, mins))
+
+        for x in times:
+            du = x[1]
+            hour = x[0]
+            cc = cc_list[hour]
+            e += si*(du/dl)*(1-(cc/100))*50*0.2
         return e
 
     def get_state_id(self):
@@ -211,9 +219,9 @@ class Calculator:
         properties = stateJson[0]
         return properties["id"]
 
-    def get_weather_data(self):
+    def get_weather_data(self,date):
         """Get json for state and  date from api"""
-        start_date = datetime.strftime(self.start_datetime, "%Y-%m-%d")
+
         state_id = self.get_state_id()
         requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
         response = requests.get(requestURL)
@@ -221,5 +229,5 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calculator = Calculator("100", "80", "100", "25/12/2020", "14:00", "1", "3168")
+    calculator = Calculator("100", "98", "100", "22/02/2021", "17:30", "1", "7250")
     print(calculator.calculate_solar_energy_w_cc())
