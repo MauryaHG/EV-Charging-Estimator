@@ -3,6 +3,8 @@ import holidays
 import requests
 from datetime import datetime, timedelta
 
+from dateutil.relativedelta import relativedelta
+
 
 class Calculator:
     """The calculator class"""
@@ -110,13 +112,13 @@ class Calculator:
         return lower_bound <= self.start_datetime <= upper_bound
 
 
-    def get_sun_hour(self,date):
+    def get_sun_hour(self, date):
         """ Get sunhours(solar isolation for a specific date in a state)"""
         stateJson = self.get_weather_data(date)
         return stateJson["sunHours"]
 
 
-    def get_solar_energy_duration(self,date):
+    def get_solar_energy_duration(self, date):
         """ returns total hours of solar generation in hours"""
         start_time = self.start_datetime
         weather_data = self.get_weather_data(date)
@@ -146,8 +148,8 @@ class Calculator:
      Output:
          float of hours of daylight for this date
     """
-    def get_day_light_length(self,date):
-        stateJson = self.get_weather_data()
+    def get_day_light_length(self, date):
+        stateJson = self.get_weather_data(date)
         sunrise_time = stateJson["sunrise"]
         sunset_time = stateJson["sunset"]
         FMT = '%H:%M:%S'
@@ -155,16 +157,13 @@ class Calculator:
         hours = diff.total_seconds()/3600
         return hours
 
-    # to be acquired through API
-    def get_solar_insolation(self, solar_insolation):
-        pass
 
     """ 
     Returns array list of cloud cover percentage for the day
     Output:
         array list [0..23] with the cloud cover value at the hour index
     """
-    def get_cloud_cover(self,date):
+    def get_cloud_cover(self, date):
 
         stateJson = self.get_weather_data(date)
         hourly_history = stateJson["hourlyWeatherHistory"]
@@ -181,7 +180,20 @@ class Calculator:
         e = si*(du/dl)*50*0.2
         return e
 
-    def calculate_solar_energy_w_cc(self,date):
+    def calculate_solar_energy_future(self,date):
+        ref_dates = self.get_ref_dates(date)
+        total = 0
+        for i in ref_dates:
+            total += self.calculate_solar_energy_w_cc(str(i))
+        return total/3
+
+
+    def get_ref_dates(self,date):
+        date = datetime.strptime(date, "%d/%m/%Y").date()
+        ref_dates = [date + relativedelta(years=-1), date + relativedelta(years=-2), date + relativedelta(years=-3)]
+        return ref_dates
+
+    def calculate_solar_energy_w_cc(self, date):
         """ Get solar energy generated with cloud cover"""
         start_time = self.start_datetime
         si = self.get_sun_hour(date)
@@ -219,13 +231,13 @@ class Calculator:
         properties = stateJson[0]
         return properties["id"]
 
-    def get_weather_data(self,*date):
+    def get_weather_data(self, *date):
         """Get json for state and  date from api"""
 
         if len(date) == 0:
             start_date = datetime.strftime(self.start_datetime, "%Y-%m-%d")
         else:
-            start_date = str(datetime.strptime(date[0], "%d/%m/%Y").date())
+            start_date = str(datetime.strptime(date[0], "%Y-%m-%d").date())
         state_id = self.get_state_id()
         requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
         response = requests.get(requestURL)
@@ -233,5 +245,7 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calculator = Calculator("100", "98", "100", "22/02/2021", "17:30", "1", "7250")
-    print(calculator.calculate_solar_energy_w_cc("22/02/2019"))
+    calculator = Calculator("100", "98", "100", "22/02/2015", "17:30", "1", "7250")
+    print(calculator.calculate_solar_energy_future("29/02/2020"))
+
+
