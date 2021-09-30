@@ -174,9 +174,10 @@ class Calculator:
 
     def calculate_solar_energy(self):
         """ Get solar energy generated """
-        si = self.get_sun_hour()
-        dl = self.get_day_light_length()
-        du = self.get_solar_energy_duration()
+        date = datetime.strftime(self.start_datetime, "%Y-%m-%d")
+        si = self.get_sun_hour(date)
+        dl = self.get_day_light_length(date)
+        du = self.get_solar_energy_duration(date)
         e = si*(du/dl)*50*0.2
         return e
 
@@ -246,6 +247,6 @@ class Calculator:
 
 if __name__ == '__main__':
     calculator = Calculator("100", "98", "100", "22/02/2015", "17:30", "1", "7250")
-    print(calculator.calculate_solar_energy_future("29/02/2020"))
+    print(calculator.calculate_solar_energy())
 
 
