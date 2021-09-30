@@ -1,3 +1,4 @@
+import math
 import holidays
 import requests
 from datetime import datetime, timedelta
@@ -182,10 +183,23 @@ class Calculator:
 
     def calculate_solar_energy_w_cc(self):
         """ Get solar energy generated with cloud cover"""
+        start_time = self.start_datetime
         si = self.get_sun_hour()
         dl = self.get_day_light_length()
-        du = self.time_calculation()/60
-        e = si*(du/dl)*50*0.2
+        solar_du = self.get_solar_energy_duration()
+        cc = self.get_cloud_cover()
+        print(start_time)
+        print(solar_du)
+        print(dl)
+        for i in range(0, math.trunc(solar_du)+1):
+
+            time = (start_time+timedelta(hours=i*1)).time().hour
+            cc_value = cc[time]
+            print(time)
+            print(cc_value)
+            total_du = self.time_calculation()/60
+
+        e = si*(1/dl)*50*0.2
         return e
 
     def get_state_id(self):
@@ -207,5 +221,5 @@ class Calculator:
 
 
 if __name__ == '__main__':
-        calculator = Calculator("100", "80", "100", "25/12/2020", "14:30", "5", "6001")
-        print(calculator.calculate_solar_energy())
+    calculator = Calculator("100", "80", "100", "25/12/2020", "14:00", "1", "3168")
+    print(calculator.calculate_solar_energy_w_cc())
