@@ -184,9 +184,9 @@ class Calculator:
     def calculate_solar_energy_w_cc(self,date):
         """ Get solar energy generated with cloud cover"""
         start_time = self.start_datetime
-        si = self.get_sun_hour()
-        dl = self.get_day_light_length()
-        solar_du = self.get_solar_energy_duration()
+        si = self.get_sun_hour(date)
+        dl = self.get_day_light_length(date)
+        solar_du = self.get_solar_energy_duration(date)
         cc_list = self.get_cloud_cover(date)
         e = 0
         times = []
@@ -219,9 +219,13 @@ class Calculator:
         properties = stateJson[0]
         return properties["id"]
 
-    def get_weather_data(self,date):
+    def get_weather_data(self,*date):
         """Get json for state and  date from api"""
 
+        if len(date) == 0:
+            start_date = datetime.strftime(self.start_datetime, "%Y-%m-%d")
+        else:
+            start_date = str(datetime.strptime(date[0], "%d/%m/%Y").date())
         state_id = self.get_state_id()
         requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
         response = requests.get(requestURL)
@@ -230,4 +234,4 @@ class Calculator:
 
 if __name__ == '__main__':
     calculator = Calculator("100", "98", "100", "22/02/2021", "17:30", "1", "7250")
-    print(calculator.calculate_solar_energy_w_cc())
+    print(calculator.calculate_solar_energy_w_cc("22/02/2019"))
