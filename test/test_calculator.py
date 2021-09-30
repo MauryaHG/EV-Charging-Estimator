@@ -83,8 +83,8 @@ class TestCalculator(unittest.TestCase):
         calculator = Calculator("100", "50", "100", "24/09/2021", "02:00", "1", "3123")
         self.assertTrue(calculator.is_holiday())
 
-        # Test case 15: QLD (Royal Queensland Show)
-        calculator = Calculator("100", "50", "100", "11/08/2021", "02:00", "1", "4000")
+        # Test case 15: QLD (The day after Good Friday)
+        calculator = Calculator("100", "50", "100", "03/04/2021", "02:00", "1", "4022")
         self.assertTrue(calculator.is_holiday())
 
         # Test case 16: SA (Adelaide Cup Day)
