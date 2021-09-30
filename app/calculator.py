@@ -127,13 +127,16 @@ class Calculator:
 
         if start_time.time() < sunrise_time.time() and final_time <= sunset_time:
             du = (final_time - sunrise_time)
-        elif start_time.time() >= sunrise_time.time() and final_time <= sunset_time:
+
+        elif start_time.time() >= sunrise_time.time() and final_time.time() <= sunset_time.time():
             du = charging_time
-        elif start_time.time() >= sunrise_time.time() and final_time > sunset_time:
+
+        elif start_time.time() >= sunrise_time.time() and final_time.time() > sunset_time.time():
             du = sunset_time - start_time
-        elif start_time.time() < sunrise_time.time() and final_time > sunset_time:
+
+        elif start_time.time() < sunrise_time.time() and final_time.time() > sunset_time.time():
             du = self.get_day_light_length()
-        return du.seconds/3600
+        return du.total_seconds()/3600
 
 
 
@@ -170,7 +173,20 @@ class Calculator:
         return cc_per_hour
 
     def calculate_solar_energy(self):
-        pass
+        """ Get solar energy generated """
+        si = self.get_sun_hour()
+        dl = self.get_day_light_length()
+        du = self.get_solar_energy_duration()
+        e = si*(du/dl)*50*0.2
+        return e
+
+    def calculate_solar_energy_w_cc(self):
+        """ Get solar energy generated with cloud cover"""
+        si = self.get_sun_hour()
+        dl = self.get_day_light_length()
+        du = self.time_calculation()/60
+        e = si*(du/dl)*50*0.2
+        return e
 
     def get_state_id(self):
         """Get state id for any state code"""
@@ -183,7 +199,7 @@ class Calculator:
 
     def get_weather_data(self):
         """Get json for state and  date from api"""
-        start_date = datetime.strftime(self.start_datetime,"%Y-%m-%d")
+        start_date = datetime.strftime(self.start_datetime, "%Y-%m-%d")
         state_id = self.get_state_id()
         requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
         response = requests.get(requestURL)
@@ -191,5 +207,5 @@ class Calculator:
 
 
 if __name__ == '__main__':
-        calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "5", "3168")
-        print(calculator.get_solar_energy_duration())
+        calculator = Calculator("100", "80", "100", "25/12/2020", "14:30", "5", "6001")
+        print(calculator.calculate_solar_energy())
