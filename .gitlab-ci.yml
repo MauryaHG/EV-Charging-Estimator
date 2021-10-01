@@ -4,12 +4,16 @@ stages:
 
 build:
   stage: build
+  tags:
+    - fit2107-runner
   image: python:3.8-alpine
   script:
     - echo "Building"
 
 test:
   stage: test
+  tags:
+    - fit2107-runner
   image: python:3.8-alpine
   script:
     - echo "Testing"
