@@ -119,7 +119,7 @@ class Calculator:
 
 
     def get_solar_energy_duration(self, date):
-        """ returns total hours of solar generation in hours"""
+        """ returns total hours of solar generation in hours while charging"""
         start_time = self.start_datetime
         weather_data = self.get_weather_data(date)
         FMT = '%H:%M:%S'
@@ -228,9 +228,10 @@ class Calculator:
         state = str(self.post_code)
         requestURL = "http://118.138.246.158/api/v1/location?postcode="+state
         response = requests.get(requestURL)
-        stateJson = response.json()
-        properties = stateJson[0]
-        return properties["id"]
+        if response.status_code == 200:
+            stateJson = response.json()
+            properties = stateJson[0]
+            return properties["id"]
 
     def get_weather_data(self, *date):
         """Get json for state and  date from api"""
@@ -246,7 +247,7 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calculator = Calculator("100", "98", "100", "22/02/2015", "17:30", "1", "7250")
+    calculator = Calculator("100", "98", "100", "22/02/2015", "17:30", "1", "3800")
     print(calculator.calculate_solar_energy())
 
 
