@@ -1,3 +1,5 @@
+from unittest.mock import Mock, patch
+
 from app.calculator import *
 import unittest
 
@@ -94,123 +96,116 @@ class TestCalculator(unittest.TestCase):
         # Test case 17: Non-holidays
         calculator = Calculator("100", "1", "100", "21/09/2021", "02:00", "1", "3168")
         self.assertFalse(calculator.is_holiday())
-
-        # Test case 18: Non-holidays
         calculator = Calculator("100", "1", "100", "01/08/2021", "02:00", "1", "4321")
         self.assertFalse(calculator.is_holiday())
-
-        # Test case 19: Non-holidays
         calculator = Calculator("100", "1", "100", "30/12/2009", "02:00", "1", "5678")
         self.assertFalse(calculator.is_holiday())
 
     def test_is_weekday(self):
         """Testing for is_weekday()"""
 
-        # Test case 20: Monday
+        # Test case 18: Monday
         calculator = Calculator("66", "1", "98", "20/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
 
-        # Test case 21: Tuesday
+        # Test case 19: Tuesday
         calculator = Calculator("66", "1", "98", "21/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
 
-        # Test case 22: Wednesday
+        # Test case 20: Wednesday
         calculator = Calculator("66", "1", "98", "22/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
 
-        # Test case 23: Thursday
+        # Test case 21: Thursday
         calculator = Calculator("66", "1", "98", "23/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
 
-        # Test case 24: Friday
+        # Test case 22: Friday
         calculator = Calculator("66", "1", "98", "24/09/2021", "06:28", "1", "1234")
         self.assertTrue(calculator.is_weekday())
 
-        # Test case 25: Saturday
+        # Test case 23: Saturday
         calculator = Calculator("66", "1", "98", "25/09/2021", "06:28", "1", "1234")
         self.assertFalse(calculator.is_weekday())
 
-        # Test case 26: Sunday
+        # Test case 24: Sunday
         calculator = Calculator("66", "1", "98", "26/09/2021", "06:28", "1", "1234")
         self.assertFalse(calculator.is_weekday())
 
     def test_time_calculation(self):
         """Testing for time_calculation()"""
 
-        # Test case 27: An usual charging time that is less than 1 hour
+        # Test case 25: An usual charging time that is less than 1 hour
         calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "8", "3168")
         self.assertAlmostEqual(8.43, calculator.time_calculation(), 2)
 
-        # Test case 28: An usual charging time that is more than 1 hour
+        # Test case 26: An usual charging time that is more than 1 hour
         calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "5", "3168")
         self.assertAlmostEqual(134.18, calculator.time_calculation(), 2)
 
-        # Test case 29: An unusually small charging time
+        # Test case 27: An unusually small charging time
         calculator = Calculator("82", "0", "1", "21/09/2021", "14:30", "8", "3168")
         self.assertAlmostEqual(0.14, calculator.time_calculation(), 2)
 
-        # Test case 30: An unusually large charging time
+        # Test case 28: An unusually large charging time
         calculator = Calculator("82", "0", "100", "21/09/2021", "14:30", "1", "3168")
         self.assertEqual(2460, calculator.time_calculation())
 
     def test_cost_calculation(self):
         """Testing for cost_calculation()"""
 
-        # Test case 31: Normal weekday charging during peak hours
+        # Test case 29: Normal weekday charging during peak hours
         calculator = Calculator("82", "20", "80", "21/09/2021", "14:30", "8", "3168")
         self.assertEqual(27.1, calculator.cost_calculation())
 
-        # Test case 32: Normal weekend charging during peak hours
+        # Test case 30: Normal weekend charging during peak hours
         calculator = Calculator("82", "20", "80", "25/09/2021", "14:30", "8", "3168")
         self.assertEqual(24.6, calculator.cost_calculation())
 
-        # Test case 33: Normal weekday charging during off-peak hours
+        # Test case 31: Normal weekday charging during off-peak hours
         calculator = Calculator("82", "20", "80", "21/09/2021", "22:30", "8", "3168")
         self.assertEqual(13.5, calculator.cost_calculation())
 
-        # Test case 34: Normal weekend charging during off-peak hours
+        # Test case 32: Normal weekend charging during off-peak hours
         calculator = Calculator("82", "20", "80", "25/09/2021", "22:30", "8", "3168")
         self.assertEqual(12.3, calculator.cost_calculation())
 
-        # Test case 35: Holiday charging during peak hours
+        # Test case 33: Holiday charging during peak hours
         calculator = Calculator("82", "20", "80", "24/09/2021", "14:30", "8", "3168")
         self.assertEqual(27.1, calculator.cost_calculation())
 
-        # Test case 36: Holiday charging during off-peak hours
+        # Test case 34: Holiday charging during off-peak hours
         calculator = Calculator("82", "20", "80", "24/09/2021", "22:30", "8", "3168")
         self.assertEqual(13.5, calculator.cost_calculation())
 
-        # Test case 37: Charging across peak & off-peak hours
+        # Test case 35: Charging across peak & off-peak hours
         calculator = Calculator("82", "20", "80", "24/09/2021", "17:00", "5", "3168")
         self.assertEqual(5.9, calculator.cost_calculation())
 
-        # Test case 38: Charging across off-peak & peak hours
+        # Test case 36: Charging across off-peak & peak hours
         calculator = Calculator("82", "20", "80", "24/09/2021", "05:00", "5", "3168")
         self.assertEqual(6.3, calculator.cost_calculation())
 
-        # Test case 39: Charging spanning across multiple peak & off-peak periods and weekday & weekend
+        # Test case 37: Charging spanning across multiple peak & off-peak periods and weekday & weekend
         calculator = Calculator("82", "0", "100", "19/09/2021", "14:00", "1", "3168")
         self.assertEqual(3.1, calculator.cost_calculation())
 
     def test_get_weather_data(self):
-        """Testing for get_weather_data()"""
-
-        # Test case 40: Test if method returns accurate data
+        # Test case 38: est if API is called correctly
         requestURL = "http://118.138.246.158/api/v1/weather?location=80593519-8dd0-4d1e-9307-43e280a4e3f4&date=2020-09-18"
         response = requests.get(requestURL)
 
         calculator = Calculator("100", "0", "100", "18/09/2020", "12:00", "1", "3000")
         self.assertEqual(response.json(), calculator.get_weather_data())
 
-        # Test case 41: Test if method returns accurate data when  specific date given
-        self.assertEqual("2021-05-15", calculator.get_weather_data('2021-05-15')["date"])
+        # Test case 39: Test if method returns accurate data when  specific date given
+        self.assertEqual("2021-05-15",calculator.get_weather_data('2021-05-15')["date"])
 
     def test_get_state_id(self):
-        """Testing for get_state_id()"""
-
-        # Test case 42: Test if method returns accurate data
+        # Test case 40: Test if API is called correctly
         requestURL = "http://118.138.246.158/api/v1/location?postcode=3800"
         response = requests.get(requestURL)
-
         calculator = Calculator("100", "0", "100", "18/09/2020", "12:00", "1", "3800")
         self.assertEqual(response.json()[0]["id"], calculator.get_state_id())
+
+
