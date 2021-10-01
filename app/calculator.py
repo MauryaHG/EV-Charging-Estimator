@@ -247,7 +247,7 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calculator = Calculator("100", "98", "100", "22/02/2015", "17:30", "1", "3800")
-    print(calculator.calculate_solar_energy())
+    test1 = Calculator("100", "98", "100", "22/02/2015", "17:30", "1", "3800")
+    print(test1.calculate_solar_energy())
 
 
