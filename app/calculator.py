@@ -102,6 +102,7 @@ class Calculator:
         else:
             province = 'ACT'
         aus_state_holidays = holidays.CountryHoliday('AUS', prov=province, state=None)
+        print(aus_state_holidays)
         return self.start_datetime in aus_state_holidays
 
     def is_weekday(self):
@@ -119,8 +120,10 @@ class Calculator:
         start_date = self.start_datetime
         time = self.start_datetime
         if start_date < date_now:
-            print(self.get_charging_times(start_date))
-            self.calculate_cost_hour()
+            timedates = self.get_charging_times(start_date)
+            print(timedates)
+            for timedate in timedates:
+                self.calculate_cost_hour(timedate)
         else:
             past_dates = self.get_ref_dates(start_date)
             print(past_dates)
@@ -129,7 +132,6 @@ class Calculator:
                 print(self.get_charging_times(date_time))
 
     def get_ref_dates(self, date):
-        print(date)
         while date > datetime.now():
             ref_dates = [date + relativedelta(years=-1), date + relativedelta(years=-2), date + relativedelta(years=-3)]
             date = date + relativedelta(years=-1)
@@ -140,24 +142,72 @@ class Calculator:
         start_datetime = date
         date = start_datetime.date()
         charging_time = self.time_calculation()/60
+        print(charging_time)
         times = []
-        hour = start_datetime.hour
-        mins = start_datetime.minute / 60
+        hour = start_datetime.time()
+        mins = (60 - start_datetime.minute) / 60
         times.append([date, hour, mins])
 
         for i in range(1, math.trunc(charging_time)):
             date_time = (start_datetime + timedelta(hours=i * 1))
-            hour = date_time.hour
+            hour = date_time.time()
             date = date_time.date()
             times.append([date, hour, 1])
 
-        time = (start_datetime + timedelta(hours=math.trunc(charging_time), minutes=charging_time % 1))
-        hour = time.hour
-        mins = time.minute / 60
-        date = time.date()
-        times.append([date, hour, mins])
+        timedate = (start_datetime + timedelta(hours=math.trunc(charging_time), minutes=(charging_time % 1)*60))
+        time = timedate.time()
+        mins = (60 - timedate.minute) / 60
+        date = timedate.date()
+        times.append([date, time, mins])
         return times
-""""have to redo stuff below mostly i think"""
+
+    def is_holiday_p_hour(self, timedata):
+        """Check if this date is a holiday"""
+        self.is_holiday()
+        sate = self.get_state_code()
+        aus_state_holidays = holidays.CountryHoliday('AUS', prov=sate, state=None)
+        print(aus_state_holidays)
+        return timedata[0] in aus_state_holidays
+
+    def is_weekday_p_hour(self, timedate):
+        """Check if the this date is a weekday"""
+        return timedate[0].weekday() <= 4
+    def is_peak_p_hour(self, timedate):
+        """Check if this time peak hour"""
+        FMT = '%H:%M:%S'
+        lower = datetime.strptime("06:00:00", FMT).time()
+        upper = datetime.strptime("18:00:00", FMT).time()
+        return lower <= timedate[1] <= upper
+
+    def calculate_cost_hour(self, timedate):
+        print(timedate)
+        print(self.is_holiday_p_hour(timedate))
+        print(self.is_weekday_p_hour(timedate))
+        if self.is_holiday_p_hour(timedate) or self.is_weekday_p_hour(timedate):
+            surcharge_factor = 1.1
+        else:
+            surcharge_factor = 1
+        if self.is_peak_p_hour(timedate):
+            discount_factor = 1
+        else:
+            discount_factor = 0.5
+        if self.is_during_sun_hours(timedate):
+            pass
+        else:
+            pass
+
+    def is_during_sun_hours(self, timedata):
+        date = timedata[0]
+        time = timedata[1]
+        stateJson = self.get_weather_data(date)
+        FMT = '%H:%M:%S'
+        sunrise_time = datetime.strptime(stateJson["sunrise"], FMT)
+        sunset_time = datetime.strptime(stateJson["sunset"], FMT)
+        if sunrise_time.time() <= time <= sunset_time.time():
+            return True
+        else:
+            return False
+
     def get_sun_hour(self, date):
         """ Get sunhours(solar isolation for a specific date in a state)"""
         stateJson = self.get_weather_data(date)
@@ -240,7 +290,6 @@ class Calculator:
         return total
 
 
-
     def get_solar_charging_time(self):
         start_datetime = self.start_datetime
         date = self.start_datetime.date()
@@ -294,20 +343,56 @@ class Calculator:
             properties = stateJson[0]
             return properties["id"]
 
+    def get_state_code(self):
+        """Get state id for any state code"""
+        state = str(self.post_code)
+        requestURL = "http://118.138.246.158/api/v1/location?postcode=" + state
+        response = requests.get(requestURL)
+        if response.status_code == 200:
+            stateJson = response.json()
+            properties = stateJson[0]
+            return properties["state"]
+
     def get_weather_data(self, *date):
         """Get json for state and  date from api"""
 
         if len(date) == 0:
             start_date = datetime.strftime(self.start_datetime, "%Y-%m-%d")
         else:
-            start_date = str(datetime.strptime(date[0], "%Y-%m-%d").date())
+            print("date")
+            print(date)
+            print(date[0])
+            start_date = str(date[0])
+            print(start_date[0])
         state_id = self.get_state_id()
         requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
         response = requests.get(requestURL)
         return response.json()
 
+    def is_holiday_(self, date):
+        """Check if the charging start date is a holiday in the state represented by postcode"""
+        # Get state from post code
+        if 800 <= self.post_code < 1000:
+            province = 'NT'
+        elif 1000 <= self.post_code < 2600 or 2619 <= self.post_code < 2900 or 2921 <= self.post_code < 3000:
+            province = 'NSW'
+        elif 3000 <= self.post_code < 4000 or 8000 <= self.post_code < 9000:
+            province = 'VIC'
+        elif 4000 <= self.post_code < 5000 or 9000 <= self.post_code < 10000:
+            province = 'QLD'
+        elif 5000 <= self.post_code < 6000:
+            province = 'SA'
+        elif 6000 <= self.post_code < 7000:
+            province = 'WA'
+        elif 7000 <= self.post_code < 8000:
+            province = 'TAS'
+        else:
+            province = 'ACT'
+        aus_state_holidays = holidays.CountryHoliday('AUS', prov=province, state=None)
+        return self.start_datetime in aus_state_holidays
 
 if __name__ == '__main__':
-    calculator = Calculator("100", "80", "100", "22/02/2020", "17:30", "1", "3800")
+    calculator = Calculator("100", "85", "100", "28/09/2020", "17:15", "1", "3800")
     print(calculator.calculate_cost())
+
 
