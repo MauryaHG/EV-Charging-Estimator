@@ -192,9 +192,20 @@ class Calculator:
         else:
             discount_factor = 0.5
         if self.is_during_sun_hours(timedate):
-            pass
+            self.get_price_and_power()
+            dl = self.get_day_light_length(timedate[0])
+            si = self.get_sun_hour(timedate[0])
+            solar_energy = si * (timedate[2]/dl) * 50 * 0.2
+            charge_energy = self.power * timedate[2]
+            net_energy = charge_energy - solar_energy
+            if net_energy < 0:
+                net_energy = 0
+            cost = (self.final_charge - self.initial_charge) / 100 * net_energy * self.base_price / 100 * surcharge_factor * discount_factor
         else:
-            pass
+            charge_energy = self.power * timedate[2]
+            cost = (self.final_charge - self.initial_charge) / 100 * charge_energy * self.base_price / 100 * surcharge_factor * discount_factor
+
+        return cost
 
     def is_during_sun_hours(self, timedata):
         date = timedata[0]
@@ -390,6 +401,18 @@ class Calculator:
             province = 'ACT'
         aus_state_holidays = holidays.CountryHoliday('AUS', prov=province, state=None)
         return self.start_datetime in aus_state_holidays
+
+    def req2(self):
+        start_date = self.start_datetime
+        timedates = self.get_charging_times(start_date)
+        cost_arr = [0 for _ in range(len(timedates))]
+        for i in range(0, len(timedates)):
+            cost_arr[i] = self.calculate_cost_hour(timedates[i])
+        total_cost = 0
+        for j in range(0, len(cost_arr)):
+            total_cost += cost_arr[i]
+        return total_cost
+
 
 if __name__ == '__main__':
     calculator = Calculator("100", "85", "100", "28/09/2020", "17:15", "1", "3800")
