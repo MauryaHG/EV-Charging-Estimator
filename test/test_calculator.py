@@ -1,3 +1,5 @@
+from unittest.mock import Mock, patch
+
 from app.calculator import *
 import unittest
 
@@ -189,7 +191,7 @@ class TestCalculator(unittest.TestCase):
         self.assertEqual(3.1, calculator.cost_calculation())
 
     def test_get_weather_data(self):
-        # Test case 38: Test if method returns accurate data
+        # Test case 38: est if API is called correctly
         requestURL = "http://118.138.246.158/api/v1/weather?location=80593519-8dd0-4d1e-9307-43e280a4e3f4&date=2020-09-18"
         response = requests.get(requestURL)
 
@@ -198,11 +200,12 @@ class TestCalculator(unittest.TestCase):
 
         # Test case 39: Test if method returns accurate data when  specific date given
         self.assertEqual("2021-05-15",calculator.get_weather_data('2021-05-15')["date"])
+
     def test_get_state_id(self):
-        # Test case 40: Test if method returns accurate data
+        # Test case 40: Test if API is called correctly
         requestURL = "http://118.138.246.158/api/v1/location?postcode=3800"
         response = requests.get(requestURL)
-
         calculator = Calculator("100", "0", "100", "18/09/2020", "12:00", "1", "3800")
         self.assertEqual(response.json()[0]["id"], calculator.get_state_id())
+
 
