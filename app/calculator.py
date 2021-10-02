@@ -239,24 +239,34 @@ class Calculator:
         """ Get the charging times from start to finish"""
         start_datetime = date
         date = start_datetime.date()
-        charging_time = self.time_calculation() / 60 # get charging duration
+        charging_time = self.time_calculation() / 60
         times = []
-        hour = start_datetime.time()
-        mins = (60 - start_datetime.minute) / 60
-        times.append([date, hour, mins]) # append first parial hour
+        final_time = (start_datetime + timedelta(hours=charging_time))
+        # if charging is over multiple hour periods
+        if final_time.hour > start_datetime.hour:
+            # get charging duration
 
-        # append all whole hours
-        for i in range(1, math.trunc(charging_time)):
-            date_time = (start_datetime + timedelta(hours=i * 1))
-            hour = date_time.time()
-            date = date_time.date()
-            times.append([date, hour, 1])
-        # add mins in charging duration and add to array
-        timedate = (start_datetime + timedelta(hours=math.trunc(charging_time), minutes=(charging_time % 1) * 60))
-        time = timedate.time()
-        mins = (60 - timedate.minute) / 60
-        date = timedate.date()
-        times.append([date, time, mins])
+            hour = start_datetime.time()
+            mins = (60 - start_datetime.minute) / 60
+            times.append([date, hour, mins]) # append first parial hour
+
+            # append all whole hours
+            for i in range(1, math.trunc(charging_time)):
+                date_time = (start_datetime + timedelta(hours=i * 1))
+                print(date_time)
+                hour = date_time.time()
+                date = date_time.date()
+                times.append([date, hour, 1])
+            # add mins in charging duration and add to array
+            timedate = (start_datetime + timedelta(hours=math.trunc(charging_time), minutes=(charging_time % 1) * 60))
+            time = timedate.time()
+            mins = (timedate.minute) / 60
+            date = timedate.date()
+            times.append([date, time, mins])
+        else:
+            hour = final_time.time()
+            mins = charging_time
+            times.append([date, hour, mins])
         return times
 
     def get_sun_hour(self, timedate):
@@ -316,7 +326,10 @@ class Calculator:
         if len(date) == 0:
             start_date = str(self.start_datetime.date())
         else:
-            start_date = str(date[0][0])
+            if type(date[0]) == str:
+                start_date = date[0]
+            else:
+                start_date = str(date[0][0])
         state_id = self.get_state_id()
         requestURL = "http://118.138.246.158/api/v1/weather?location=" + state_id + "&date=" + start_date
         response = requests.get(requestURL)
@@ -331,9 +344,9 @@ class Calculator:
         total_cost = 0
         for j in range(0, len(cost_arr)):
             total_cost += cost_arr[j]
-        return otal_cost
+        return total_cost
 
 
 if __name__ == '__main__':
-    calculator = Calculator("100", "98", "100", "25/12/2020", "08:00", "8", "6001")
-    print(calculator.calculate_cost_alg3())
+    calculator = Calculator("100", "98", "100", "25/12/2020", "08:26", "8", "6001")
+    print(calculator.req2())

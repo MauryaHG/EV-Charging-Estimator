@@ -208,4 +208,5 @@ class TestCalculator(unittest.TestCase):
         calculator = Calculator("100", "0", "100", "18/09/2020", "12:00", "1", "3800")
         self.assertEqual(response.json()[0]["id"], calculator.get_state_id())
 
-
+if __name__ == '__main__':
+    unittest.main()
