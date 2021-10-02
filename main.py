@@ -46,8 +46,8 @@ def operation_result():
         minutes = charging_time % 60
         output_time = '{} hours {:.0f} minutes'.format(hours, minutes)
         output_cost = "Cost of normal charging $ " + str(charging_cost)
-        output_cost_2 = "Cost with solar energy:$ " + str(charging_cost_2)
-        output_cost_3 = "Cost with solar energy and cloud cover$ " + str(charging_cost_3)
+        output_cost_2 = "Cost with solar energy:$ {:.2f}".format(charging_cost_2)
+        output_cost_3 = "Cost with solar energy and cloud cover$ {:.2f}".format(charging_cost_3)
 
 
         # you may change the return statement also
