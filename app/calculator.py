@@ -246,7 +246,7 @@ class Calculator:
         final_time = (start_datetime + timedelta(hours=charging_time))
         ad_min_time = (start_datetime + timedelta(hours=(charging_time % 1)))
         # if charging is over multiple hour periods
-        if ad_min_time.hour > start_datetime.hour:
+        if charging_time > 1 or ad_min_time.hour > start_datetime.hour:
             # get charging duration
 
             hour = start_datetime.time()
@@ -350,5 +350,6 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calculator = Calculator("100", "20", "80", "11/09/2021", "12:00", "6", "3000")
-    print((calculator.is_during_sun_hours([datetime.strptime("11/09/2021", '%d/%m/%Y'), datetime.strptime("05:00", '%H:%M').time()])))
+    calculator = Calculator("82", "20", "80", "25/09/2021", "8:00", "6", "3168")
+    timedates = calculator.get_charging_times(calculator.start_datetime)
+    print(calculator.calculate_cost_hour(timedates[0]))
