@@ -285,6 +285,21 @@ class TestCalculator(unittest.TestCase):
         calculator = Calculator("100", "20", "80", "11/09/2021", "12:00", "6", "3000")
         self.assertFalse(calculator.is_during_sun_hours([datetime.strptime("11/09/2021", '%d/%m/%Y').date(), datetime.strptime("05:00", '%H:%M').time()]))
 
+    def test_get_sun_hour(self):
+        # Test case x :Test if method returns correct sun isolation value
+        calculator = Calculator("100", "20", "80", "25/12/2020", "12:00", "6", "6001")
+        self.assertEqual(8.6,(calculator.get_sun_hour([datetime.strptime("25/12/2020", '%d/%m/%Y').date()])))
+
+    def test_get_day_light_length(self):
+        # Test case x :Test if method returns correct daylight length value
+        calculator = Calculator("100", "20", "80", "25/12/2020", "12:00", "6", "6001")
+        self.assertAlmostEqual(14.23, (calculator.get_day_light_length([datetime.strptime("25/12/2020", '%d/%m/%Y').date()])),2)
+
+    def test_get_cloud_cover(self):
+        # Test case x :Test if method returns correct cloud cover values
+        calculator = Calculator("100", "20", "80", "22/02/2021", "12:00", "6", "7250")
+        self.assertEqual(18,(calculator.get_cloud_cover([datetime.strptime("22/02/2021", '%d/%m/%Y').date(), datetime.strptime("17:30", '%H:%M').time()])))
+
 
 if __name__ == '__main__':
     unittest.main()
