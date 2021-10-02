@@ -158,6 +158,12 @@ class Calculator:
     """
 
     def calculate_cost_hour(self, timedate, cloudcover=False):
+        """
+        Function for calculating cost of charging for a single hour during the charging period. Checks if it is currently
+        a holiday/weekday and if it is peak/off-peak hour and if there is daylight. If there is daylight solar energy is generated
+        and subtracted from charging energy to find net energy which is then used to calculatae the cost for that hour.
+        The function also works when a partial hour is inputted, ie 0.5 or 0.25 instead of 1.
+        """
         # is cloudcover is true get cloudcover value for this day
 
         # check if this date is a holiday or a weekday
@@ -338,6 +344,12 @@ class Calculator:
         return response.json()
 
     def req2(self):
+        """
+        Function for calculating the cost of charging for REQ2 of the assignment. The function creates a list of lists
+        that contains the date hours and minutes seperated. Using a for loop a single hour is selected and passed on to
+        calculate_cost_hours method to calculate the cost of charging for a single hour as specified in ALG2. Each value
+        is stored and at the end all the values are added and returned.
+        """
         start_date = self.start_datetime
         timedates = self.get_charging_times(start_date)
         cost_arr = [0 for _ in range(len(timedates))]
