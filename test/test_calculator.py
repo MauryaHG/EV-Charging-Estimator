@@ -304,7 +304,7 @@ class TestCalculator(unittest.TestCase):
         self.assertFalse(calculator.is_during_sun_hours([datetime(2021, 9, 11).date(), datetime(2021, 9, 11, 5, 0, 0).time()]))
 
     def test_get_sun_hour(self):
-        # Test case 67 :Test if method returns correct sun isolation value
+        # Test case 61 :Test if method returns correct sun isolation value
         calculator = Calculator("100", "20", "80", "25/12/2020", "12:00", "6", "6001")
         self.assertEqual(8.6,(calculator.get_sun_hour([datetime(2020, 12, 25).date()])))
 
