@@ -231,7 +231,7 @@ class Calculator:
     @staticmethod
     def get_ref_dates(date):
         """Get dates 3 years behind of current year with specified date """
-        ref_dates = None
+        ref_dates = date
         while date > datetime.now():
             ref_dates = [date + relativedelta(years=-1), date + relativedelta(years=-2), date + relativedelta(years=-3)]
             date = date + relativedelta(years=-1)
@@ -350,6 +350,5 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calculator = Calculator("100", "50", "100", "22/02/2020", "20:30", "3", "7250")
-    print(calculator.time_calculation())
-    print(calculator.calculate_cost_alg3())
+    calculator = Calculator("100", "20", "80", "11/09/2021", "12:00", "6", "3000")
+    print((calculator.is_during_sun_hours([datetime.strptime("11/09/2021", '%d/%m/%Y'), datetime.strptime("05:00", '%H:%M').time()])))

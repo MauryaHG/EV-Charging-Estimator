@@ -249,6 +249,42 @@ class TestCalculator(unittest.TestCase):
         timedates= calculator.get_charging_times(calculator.start_datetime)
         self.assertAlmostEqual(1.45, calculator.calculate_cost_hour(timedates[1]), 2)
 
+    def test_is_holiday_p_hour(self):
+        # Test case x :Test holiday date returns true
+        calculator = Calculator("100", "20", "80", "01/01/2019", "12:00", "6", "3000")
+        self.assertTrue(calculator.is_holiday_p_hour([datetime.strptime("01/01/2019",'%d/%m/%Y')]))
+
+        # Test case x :Test if non holiday date returns false
+        calculator = Calculator("100", "20", "80", "27/09/2019", "12:00", "6", "3000")
+        self.assertFalse(calculator.is_holiday_p_hour([datetime.strptime("18/09/2019", '%d/%m/%Y')]))
+
+    def test_is_is_weekday_p_hour(self):
+        # Test case x :Test weekday date returns true
+        calculator = Calculator("100", "20", "80", "01/09/2021", "12:00", "6", "3000")
+        self.assertTrue(calculator.is_weekday_p_hour([datetime.strptime("01/09/2021", '%d/%m/%Y')]))
+
+        # Test case x :Test weekend date returns false
+        calculator = Calculator("100", "20", "80", "11/09/2021", "12:00", "6", "3000")
+        self.assertFalse(calculator.is_weekday_p_hour([datetime.strptime("11/09/2021", '%d/%m/%Y')]))
+
+    def test_is_peak_p_hour(self):
+        # Test case x :Test  peak hour returns true
+        calculator = Calculator("100", "20", "80", "01/09/2021", "12:00", "6", "3000")
+        self.assertTrue(calculator.is_peak_p_hour([0,datetime.strptime("10:00", '%H:%M').time()]))
+
+        # Test case x :Test off peak hour returns false
+        calculator = Calculator("100", "20", "80", "11/09/2021", "12:00", "6", "3000")
+        self.assertFalse(calculator.is_peak_p_hour([0,datetime.strptime("20:00", '%H:%M').time()]))
+
+    def test_is_during_sun_hours(self):
+        # Test case x :Test  hour is during sun hours for this date returns true
+        calculator = Calculator("100", "20", "80", "01/09/2021", "12:00", "6", "3000")
+        self.assertTrue(calculator.is_during_sun_hours([datetime.strptime("11/09/2021", '%d/%m/%Y').date(), datetime.strptime("12:00", '%H:%M').time()]))
+
+        # Test case x :Test hour is not during sun hour for this date returns false
+        calculator = Calculator("100", "20", "80", "11/09/2021", "12:00", "6", "3000")
+        self.assertFalse(calculator.is_during_sun_hours([datetime.strptime("11/09/2021", '%d/%m/%Y').date(), datetime.strptime("05:00", '%H:%M').time()]))
+
 
 if __name__ == '__main__':
     unittest.main()
