@@ -38,18 +38,24 @@ def operation_result():
 
         charging_time = calculator.time_calculation()
         charging_cost = calculator.cost_calculation()
+        charging_cost_2 = calculator.req2()
+        charging_cost_3 = calculator.calculate_cost_alg3()
+
 
         hours = math.floor(charging_time / 60)
         minutes = charging_time % 60
-        output_time = '{} hours {:.2f} minutes'.format(hours, minutes)
-        output_cost = "$ " + str(charging_cost)
+        output_time = '{} hours {:.0f} minutes'.format(hours, minutes)
+        output_cost = "Cost of normal charging $ " + str(charging_cost)
+        output_cost_2 = "Cost with solar energy:$ " + str(charging_cost_2)
+        output_cost_3 = "Cost with solar energy and cloud cover$ " + str(charging_cost_3)
+
 
         # you may change the return statement also
 
         # values of variables can be sent to the template for rendering the webpage that users will see return
         # render_template('calculator.html', cost = cost, time = time, calculation_success = True,
         # form = calculator_form)
-        return render_template('calculator.html', cost=output_cost, time=output_time, calculation_success=True,
+        return render_template('calculator.html', time=output_time, cost=output_cost, cost_2=output_cost_2, cost_3=output_cost_3, calculation_success=True,
                                form=calculator_form)
     else:
         # battery_capacity = request.form['BatteryPackCapacity']

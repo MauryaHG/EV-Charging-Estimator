@@ -130,7 +130,7 @@ class Calculator:
             timedates = self.get_charging_times(start_date)
             # get cost for each partial/whole hour
             for timedate in timedates:
-                total_cost += self.calculate_cost_hour(timedate)
+                total_cost += self.calculate_cost_hour(timedate, True)
         # if date is in the future
         else:
             # get dates of past 3 years
@@ -159,10 +159,7 @@ class Calculator:
 
     def calculate_cost_hour(self, timedate, cloudcover=False):
         # is cloudcover is true get cloudcover value for this day
-        if cloudcover:
-            cc_value = self.get_cloud_cover(timedate)
-        else:
-            cc_value = 0
+
         # check if this date is a holiday or a weekday
         if self.is_holiday_p_hour(timedate) or self.is_weekday_p_hour(timedate):
             surcharge_factor = 1.1
@@ -175,12 +172,17 @@ class Calculator:
             discount_factor = 0.5
         # if this hour has sun light
         if self.is_during_sun_hours(timedate):
+            if cloudcover:
+                cc_value = self.get_cloud_cover(timedate)
+            else:
+                cc_value = 0
             # initialise  price and power
             self.get_price_and_power()
             dl = self.get_day_light_length(timedate)  # get daylight duration
             si = self.get_sun_hour(timedate)  # get solar isolation
             solar_energy = si * (timedate[2] / dl) * (1 - (cc_value / 100)) * 50 * 0.2  # calculate solar energy
-            charge_energy = self.power * timedate[2]  # get charge for this charge duration
+            charge_energy = self.power * timedate[2]
+            # get charge for this charge duration
             net_energy = charge_energy - solar_energy
             # if net charge is less than 0 then set it to 0
             if net_energy < 0:
@@ -242,8 +244,9 @@ class Calculator:
         charging_time = self.time_calculation() / 60
         times = []
         final_time = (start_datetime + timedelta(hours=charging_time))
+        ad_min_time = (start_datetime + timedelta(hours=(charging_time % 1)))
         # if charging is over multiple hour periods
-        if final_time.hour > start_datetime.hour:
+        if ad_min_time.hour > start_datetime.hour:
             # get charging duration
 
             hour = start_datetime.time()
@@ -253,7 +256,6 @@ class Calculator:
             # append all whole hours
             for i in range(1, math.trunc(charging_time)):
                 date_time = (start_datetime + timedelta(hours=i * 1))
-                print(date_time)
                 hour = date_time.time()
                 date = date_time.date()
                 times.append([date, hour, 1])
@@ -348,5 +350,6 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calculator = Calculator("100", "98", "100", "25/12/2020", "08:26", "8", "6001")
-    print(calculator.req2())
+    calculator = Calculator("100", "50", "100", "22/02/2020", "20:30", "3", "7250")
+    print(calculator.time_calculation())
+    print(calculator.calculate_cost_alg3())
