@@ -298,8 +298,15 @@ class TestCalculator(unittest.TestCase):
     def test_get_cloud_cover(self):
         # Test case 58 :Test if method returns correct cloud cover values
         calculator = Calculator("100", "20", "80", "22/02/2021", "12:00", "6", "7250")
-        self.assertEqual(18,(calculator.get_cloud_cover([datetime.strptime("22/02/2021", '%d/%m/%Y').date(), datetime.strptime("17:30", '%H:%M').time()])))
+        self.assertEqual(18, (calculator.get_cloud_cover([datetime.strptime("22/02/2021", '%d/%m/%Y').date(), datetime.strptime("17:30", '%H:%M').time()])))
 
+    def test_calculate_cost_alg3(self):
+        # Test case 57 :Test to check if correct cost is returned when date in the past is entered
+        calculator = Calculator("100", "20", "80", "25/12/2020", "12:00", "6", "6001")
+        self.assertAlmostEqual(11.356, calculator.calculate_cost_alg3(), 2)
 
+        # Test case 57 :Test to check if correct cost is returned when date in the past is entered
+        calculator = Calculator("100", "20", "80", "25/12/2023", "05:00", "5", "6001")
+        self.assertAlmostEqual(6.889, calculator.calculate_cost_alg3(), 2)
 if __name__ == '__main__':
     unittest.main()
