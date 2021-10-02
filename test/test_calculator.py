@@ -208,5 +208,47 @@ class TestCalculator(unittest.TestCase):
         calculator = Calculator("100", "0", "100", "18/09/2020", "12:00", "1", "3800")
         self.assertEqual(response.json()[0]["id"], calculator.get_state_id())
 
+    def test_calculate_cost_hour(self):
+        # Test case 41: Test if cost of one whole hour is calculated correctly taking into account REQ2(Weekday, peak times)
+        calculator = Calculator("82", "20", "80", "25/09/2021", "8:00", "6", "3168")
+        timedates= calculator.get_charging_times(calculator.start_datetime)
+        self.assertAlmostEqual(6.40, calculator.calculate_cost_hour(timedates[0]),2)
+
+        # Test case 42: Test if cost of one partial hour is calculated correctly taking into account REQ2(Weekday, peak times)
+        calculator = Calculator("82", "20", "80", "25/09/2021", "8:00", "6", "3168")
+        timedates = calculator.get_charging_times(calculator.start_datetime)
+        self.assertAlmostEqual(2.35, calculator.calculate_cost_hour(timedates[1]), 2)
+
+        # Test case 43: Test if cost of one whole hour is calculated correctly taking into account REQ2(Weekend, peak times)
+        calculator = Calculator("82", "20", "80", "27/09/2021", "8:00", "6", "3168")
+        timedates= calculator.get_charging_times(calculator.start_datetime)
+        self.assertAlmostEqual(6.99, calculator.calculate_cost_hour(timedates[0]),2)
+
+        # Test case 44: Test if cost of one partial hour is calculated correctly taking into account REQ2(Weekend, peak times)
+        calculator = Calculator("82", "20", "80", "27/09/2021", "8:00", "6", "3168")
+        timedates= calculator.get_charging_times(calculator.start_datetime)
+        self.assertAlmostEqual(2.56, calculator.calculate_cost_hour(timedates[1]),2)
+
+        # Test case 45: Test if cost of one whole hour is calculated correctly when there is no daylight for REQ2(Weekday, off peak)
+        calculator = Calculator("82", "20", "80", "25/09/2021", "22:00", "6", "3168")
+        timedates= calculator.get_charging_times(calculator.start_datetime)
+        self.assertEqual(3.6, calculator.calculate_cost_hour(timedates[0]))
+
+        # Test case 46: Test if cost of one partial hour is calculated correctly when there is no daylight for REQ2(Weekday, off peak)
+        calculator = Calculator("82", "20", "80", "25/09/2021", "22:00", "6", "3168")
+        timedates= calculator.get_charging_times(calculator.start_datetime)
+        self.assertEqual(1.32, calculator.calculate_cost_hour(timedates[1]))
+
+        # Test case 47: Test if cost of one whole hour is calculated correctly when there is no daylight for REQ2(Weekend, off peak)
+        calculator = Calculator("82", "20", "80", "27/09/2021", "22:00", "6", "3168")
+        timedates= calculator.get_charging_times(calculator.start_datetime)
+        self.assertAlmostEqual(3.96, calculator.calculate_cost_hour(timedates[0]), 2)
+
+        # Test case 48: Test if cost of one partial hour is calculated correctly when there is no daylight for REQ2(Weekend, off peak)
+        calculator = Calculator("82", "20", "80", "27/09/2021", "22:00", "6", "3168")
+        timedates= calculator.get_charging_times(calculator.start_datetime)
+        self.assertAlmostEqual(1.45, calculator.calculate_cost_hour(timedates[1]), 2)
+
+
 if __name__ == '__main__':
     unittest.main()
