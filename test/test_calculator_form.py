@@ -21,21 +21,21 @@ class TestCalculatorForm(unittest.TestCase):
             field = Mock()
             form = Calculator_Form()
 
-            # Test case: Check if None given as battery capacity, validation error is returned
+            # Test case 66 : Check if None given as battery capacity, validation error is returned
             field.data = None
             try:
                 form.validate_BatteryPackCapacity(field)
             except ValidationError as msg:
                 self.assertEqual('Field data is none', str(msg))
 
-            # Test case: Check if empty string  given as battery capacity, value error is returned
+            # Test case 67 : Check if empty string  given as battery capacity, value error is returned
             field.data = ''
             try:
                 form.validate_BatteryPackCapacity(field)
             except ValueError as msg:
                 self.assertEqual('Cannot fetch data', str(msg))
 
-            # Test case: Check if very large battery capacity is given, value error is returned
+            # Test case 68 : Check if very large battery capacity is given, value error is returned
             field.data = '1000'
             try:
                 form.validate_BatteryPackCapacity(field)
@@ -50,21 +50,21 @@ class TestCalculatorForm(unittest.TestCase):
             field = Mock()
             form = Calculator_Form()
 
-            # Test case: Check if None given as InitialCharge, validation error is returned
+            # Test case 69 : Check if None given as InitialCharge, validation error is returned
             field.data = None
             try:
                 form.validate_InitialCharge(field)
             except ValidationError as msg:
                 self.assertEqual('Field data is none', str(msg))
 
-            # Test case: Check if empty string  given as InitialCharge, value error is returned
+            # Test case 70 : Check if empty string  given as InitialCharge, value error is returned
             field.data = ''
             try:
                 form.validate_InitialCharge(field)
             except ValueError as msg:
                 self.assertEqual('Cannot fetch data', str(msg))
 
-            # Test case: Check if InitialCharge greater than 100 is given, value error is returned
+            # Test case 71 : Check if InitialCharge greater than 100 is given, value error is returned
             field.data = '150'
             form.FinalCharge = MagicMock()
             try:
@@ -78,21 +78,21 @@ class TestCalculatorForm(unittest.TestCase):
             field = Mock()
             form = Calculator_Form()
 
-            # Test case: Check if None given as FinalCharge, validation error is returned
+            # Test case 72 : Check if None given as FinalCharge, validation error is returned
             field.data = None
             try:
                 form.validate_FinalCharge(field)
             except ValidationError as msg:
                 self.assertEqual('Field data is none', str(msg))
 
-            # Test case: Check if empty string  given as FinalCharge, value error is returned
+            # Test case 73 : Check if empty string  given as FinalCharge, value error is returned
             field.data = ""
             try:
                 form.validate_FinalCharge(field)
             except ValueError as msg:
                 self.assertEqual('Cannot fetch data', str(msg))
 
-            # Test case: Check if FinalCharge less than 1 is given, value error is returned
+            # Test case 74 : Check if FinalCharge less than 1 is given, value error is returned
             field.data = "0"
             form.InitialCharge = MagicMock()
             try:
@@ -106,21 +106,21 @@ class TestCalculatorForm(unittest.TestCase):
             field = Mock()
             form = Calculator_Form()
 
-            # Test case: Check if None given as start date, validation error is returned
+            # Test case 75 : Check if None given as start date, validation error is returned
             field.data = None
             try:
                 form.validate_StartDate(field)
             except ValidationError as msg:
                 self.assertEqual('Field data is none', str(msg))
 
-            # Test case: Check if empty string  given as start date, value error is returned
+            # Test case 76 : Check if empty string  given as start date, value error is returned
             field.data = ''
             try:
                 form.validate_StartDate(field)
             except ValueError as msg:
                 self.assertEqual('Cannot fetch data', str(msg))
 
-            # Test case: Check if invalid start date is given, value error is returned
+            # Test case 77 : Check if invalid start date is given, value error is returned
             field.data = datetime(2002, 5, 5).date()
             try:
                 form.validate_StartDate(field)
@@ -133,14 +133,14 @@ class TestCalculatorForm(unittest.TestCase):
             field = Mock()
             form = Calculator_Form()
 
-            # Test case: Check if None given as start time, validation error is returned
+            # Test case 78 : Check if None given as start time, validation error is returned
             field.data = None
             try:
                 form.validate_StartTime(field)
             except ValidationError as msg:
                 self.assertEqual('Field data is none', str(msg))
 
-            # Test case: Check if empty string  given as start time, value error is returned
+            # Test case 79 : Check if empty string  given as start time, value error is returned
             field.data = ''
             try:
                 form.validate_StartTime(field)
@@ -153,21 +153,21 @@ class TestCalculatorForm(unittest.TestCase):
             field = Mock()
             form = Calculator_Form()
 
-            # Test case: Check if None given as ChargerConfiguration, validation error is returned
+            # Test case 80 : Check if None given as ChargerConfiguration, validation error is returned
             field.data = None
             try:
                 form.validate_ChargerConfiguration(field)
             except ValidationError as msg:
                 self.assertEqual('Field data is none', str(msg))
 
-            # Test case: Check if empty string  given as ChargerConfiguration, value error is returned
+            # Test case 81 : Check if empty string  given as ChargerConfiguration, value error is returned
             field.data = ''
             try:
                 form.validate_ChargerConfiguration(field)
             except ValueError as msg:
                 self.assertEqual('Cannot fetch data', str(msg))
 
-            # Test case: Check if invalid ChargerConfiguration is given, value error is returned
+            # Test case 82: Check if invalid ChargerConfiguration is given, value error is returned
             field.data = '9'
             try:
                 form.validate_ChargerConfiguration(field)
@@ -180,21 +180,21 @@ class TestCalculatorForm(unittest.TestCase):
             field = Mock()
             form = Calculator_Form()
 
-            # Test case: Check if None given as PostCode, validation error is returned
+            # Test case 83 : Check if None given as PostCode, validation error is returned
             field.data = None
             try:
                 form.validate_PostCode(field)
             except ValidationError as msg:
                 self.assertEqual('Field data is none', str(msg))
 
-            # Test case: Check if empty string  given as PostCode, value error is returned
+            # Test case 84 : Check if empty string  given as PostCode, value error is returned
             field.data = ''
             try:
                 form.validate_PostCode(field)
             except ValueError as msg:
                 self.assertEqual('Cannot fetch data', str(msg))
 
-            # Test case: Check if invalid PostCode is given, value error is returned
+            # Test case 85 : Check if invalid PostCode is given, value error is returned
             field.data = '1000'
             try:
                 form.validate_PostCode(field)
