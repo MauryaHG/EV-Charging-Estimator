@@ -40,6 +40,7 @@ class Calculator_Form(FlaskForm):
 
     def validate_FinalCharge(self, field):
         """Validation of final charge"""
+
         if field.data is None:
             raise ValidationError('Field data is none')
         elif field.data == '':
