@@ -1,5 +1,3 @@
-import math
-
 from flask import Flask, flash
 from flask import render_template
 from flask import request
@@ -34,13 +32,13 @@ def operation_result():
         post_code = request.form['PostCode']
 
         # if valid, create calculator to calculate the time and cost
-        calculator = Calculator(battery_capacity, initial_charge, final_charge, start_date, start_time, charger_configuration, post_code)
+        calculator = Calculator(battery_capacity, initial_charge, final_charge, start_date, start_time,
+                                charger_configuration, post_code)
 
         charging_time = calculator.time_calculation()
         charging_cost = calculator.cost_calculation()
         charging_cost_2 = calculator.req2()
         charging_cost_3 = calculator.calculate_cost_alg3()
-
 
         hours = math.floor(charging_time / 60)
         minutes = charging_time % 60
@@ -49,13 +47,13 @@ def operation_result():
         output_cost_2 = "Cost with solar energy:$ {:.2f}".format(charging_cost_2)
         output_cost_3 = "Cost with solar energy and cloud cover$ {:.2f}".format(charging_cost_3)
 
-
         # you may change the return statement also
 
         # values of variables can be sent to the template for rendering the webpage that users will see return
         # render_template('calculator.html', cost = cost, time = time, calculation_success = True,
         # form = calculator_form)
-        return render_template('calculator.html', time=output_time, cost=output_cost, cost_2=output_cost_2, cost_3=output_cost_3, calculation_success=True,
+        return render_template('calculator.html', time=output_time, cost=output_cost, cost_2=output_cost_2,
+                               cost_3=output_cost_3, calculation_success=True,
                                form=calculator_form)
     else:
         # battery_capacity = request.form['BatteryPackCapacity']

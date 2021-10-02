@@ -1,9 +1,8 @@
 import unittest
 from unittest import mock
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, MagicMock
 
 import main
-
 from app.calculator_form import *
 
 
@@ -200,6 +199,7 @@ class TestCalculatorForm(unittest.TestCase):
                 form.validate_PostCode(field)
             except ValueError as msg:
                 self.assertEqual('Please enter a valid Australian post code', str(msg))
+
 
 if __name__ == '__main__':
     unittest.main()

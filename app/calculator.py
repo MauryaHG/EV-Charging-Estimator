@@ -257,7 +257,7 @@ class Calculator:
 
             hour = start_datetime.time()
             mins = (60 - start_datetime.minute) / 60
-            times.append([date, hour, mins]) # append first parial hour
+            times.append([date, hour, mins])  # append first parial hour
 
             # append all whole hours
             for i in range(1, math.trunc(charging_time)):
@@ -282,12 +282,12 @@ class Calculator:
         stateJson = self.get_weather_data(timedate)
         return stateJson["sunHours"]
 
-    """ 
-     Returns  day light hours for a specific date in a state
-     Output:
-         float of hours of daylight for this date
-    """
     def get_day_light_length(self, timedate):
+        """
+        Returns  day light hours for a specific date in a state
+        Output:
+             float of hours of daylight for this date
+        """
         stateJson = self.get_weather_data(timedate)
         sunrise_time = stateJson["sunrise"]
         sunset_time = stateJson["sunset"]
@@ -296,12 +296,12 @@ class Calculator:
         hours = diff.total_seconds() / 3600
         return hours
 
-    """ 
-    Returns array list of cloud cover percentage for the day
-    Output:
-        array list [0..23] with the cloud cover value at the hour index
-    """
     def get_cloud_cover(self, timedate):
+        """
+        Returns array list of cloud cover percentage for the day
+        Output:
+            array list [0..23] with the cloud cover value at the hour index
+        """
         weatherJson = self.get_weather_data(timedate)
         hourly_history = weatherJson["hourlyWeatherHistory"]
         time = timedate[1]
@@ -362,6 +362,4 @@ class Calculator:
 
 
 if __name__ == '__main__':
-    calculator = Calculator("82", "20", "80", "25/09/2021", "8:00", "6", "3168")
-    timedates = calculator.get_charging_times(calculator.start_datetime)
-    print(calculator.calculate_cost_hour(timedates[0]))
+    pass
