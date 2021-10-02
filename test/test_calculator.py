@@ -199,7 +199,7 @@ class TestCalculator(unittest.TestCase):
         self.assertEqual(response.json(), calculator.get_weather_data())
 
         # Test case 39: Test if method returns accurate data when  specific date given
-        self.assertEqual("2021-05-15",calculator.get_weather_data('2021-05-15')["date"])
+        self.assertEqual("2021-05-15", calculator.get_weather_data('2021-05-15')["date"])
 
     def test_get_state_id(self):
         # Test case 40: Test if API is called correctly
@@ -211,8 +211,8 @@ class TestCalculator(unittest.TestCase):
     def test_calculate_cost_hour(self):
         # Test case 41: Test if cost of one whole hour is calculated correctly taking into account REQ2(Weekday, peak times)
         calculator = Calculator("82", "20", "80", "21/09/2021", "8:00", "6", "3168")
-        timedates= calculator.get_charging_times(calculator.start_datetime)
-        self.assertAlmostEqual(7.35, calculator.calculate_cost_hour(timedates[0]),2)
+        timedates = calculator.get_charging_times(calculator.start_datetime)
+        self.assertAlmostEqual(7.35, calculator.calculate_cost_hour(timedates[0]), 2)
 
         # Test case 42: Test if cost of one partial hour is calculated correctly taking into account REQ2(Weekday, peak times)
         calculator = Calculator("82", "20", "80", "21/09/2021", "8:00", "6", "3168")
@@ -221,32 +221,32 @@ class TestCalculator(unittest.TestCase):
 
         # Test case 43: Test if cost of one whole hour is calculated correctly taking into account REQ2(Weekend, peak times)
         calculator = Calculator("82", "20", "80", "25/09/2021", "8:00", "6", "3168")
-        timedates= calculator.get_charging_times(calculator.start_datetime)
-        self.assertAlmostEqual(6.40, calculator.calculate_cost_hour(timedates[0]),2)
+        timedates = calculator.get_charging_times(calculator.start_datetime)
+        self.assertAlmostEqual(6.40, calculator.calculate_cost_hour(timedates[0]), 2)
 
         # Test case 44: Test if cost of one partial hour is calculated correctly taking into account REQ2(Weekend, peak times)
         calculator = Calculator("82", "20", "80", "25/09/2021", "8:00", "6", "3168")
-        timedates= calculator.get_charging_times(calculator.start_datetime)
-        self.assertAlmostEqual(2.35, calculator.calculate_cost_hour(timedates[1]),2)
+        timedates = calculator.get_charging_times(calculator.start_datetime)
+        self.assertAlmostEqual(2.35, calculator.calculate_cost_hour(timedates[1]), 2)
 
         # Test case 45: Test if cost of one whole hour is calculated correctly when there is no daylight for REQ2(Weekday, off peak)
         calculator = Calculator("82", "20", "80", "21/09/2021", "22:00", "6", "3168")
-        timedates= calculator.get_charging_times(calculator.start_datetime)
+        timedates = calculator.get_charging_times(calculator.start_datetime)
         self.assertAlmostEqual(3.96, calculator.calculate_cost_hour(timedates[0]), 2)
 
         # Test case 46: Test if cost of one partial hour is calculated correctly when there is no daylight for REQ2(Weekday, off peak)
         calculator = Calculator("82", "20", "80", "21/09/2021", "22:00", "6", "3168")
-        timedates= calculator.get_charging_times(calculator.start_datetime)
+        timedates = calculator.get_charging_times(calculator.start_datetime)
         self.assertAlmostEqual(1.45, calculator.calculate_cost_hour(timedates[1]), 2)
 
         # Test case 47: Test if cost of one whole hour is calculated correctly when there is no daylight for REQ2(Weekend, off peak)
         calculator = Calculator("82", "20", "80", "25/09/2021", "22:00", "6", "3168")
-        timedates= calculator.get_charging_times(calculator.start_datetime)
+        timedates = calculator.get_charging_times(calculator.start_datetime)
         self.assertAlmostEqual(3.60, calculator.calculate_cost_hour(timedates[0]), 2)
 
         # Test case 48: Test if cost of one partial hour is calculated correctly when there is no daylight for REQ2(Weekend, off peak)
         calculator = Calculator("82", "20", "80", "25/09/2021", "22:00", "6", "3168")
-        timedates= calculator.get_charging_times(calculator.start_datetime)
+        timedates = calculator.get_charging_times(calculator.start_datetime)
         self.assertAlmostEqual(1.32, calculator.calculate_cost_hour(timedates[1]), 2)
 
     def test_req2(self):
@@ -265,7 +265,6 @@ class TestCalculator(unittest.TestCase):
         # Test case 52: Test if total cost spanning over two days using REQ2 is correct(Weekend spanning over peak and off peak hours, including partial/whole hours)
         calculator = Calculator("100", "10", "90", "25/09/2021", "8:00", "2", "3168")
         self.assertAlmostEqual(1.49, calculator.req2(), 2)
-
 
     def test_is_holiday_p_hour(self):
         # Test case 53 :Test holiday date returns true
@@ -297,16 +296,18 @@ class TestCalculator(unittest.TestCase):
     def test_is_during_sun_hours(self):
         # Test case 59 :Test  hour is during sun hours for this date returns true
         calculator = Calculator("100", "20", "80", "01/09/2021", "12:00", "6", "3000")
-        self.assertTrue(calculator.is_during_sun_hours([datetime(2021, 9, 11).date(), datetime(2021, 9, 11, 12, 0, 0).time()]))
+        self.assertTrue(
+            calculator.is_during_sun_hours([datetime(2021, 9, 11).date(), datetime(2021, 9, 11, 12, 0, 0).time()]))
 
         # Test case 60 :Test hour is not during sun hour for this date returns false
         calculator = Calculator("100", "20", "80", "11/09/2021", "12:00", "6", "3000")
-        self.assertFalse(calculator.is_during_sun_hours([datetime(2021, 9, 11).date(), datetime(2021, 9, 11, 5, 0, 0).time()]))
+        self.assertFalse(
+            calculator.is_during_sun_hours([datetime(2021, 9, 11).date(), datetime(2021, 9, 11, 5, 0, 0).time()]))
 
     def test_get_sun_hour(self):
         # Test case 61 :Test if method returns correct sun isolation value
         calculator = Calculator("100", "20", "80", "25/12/2020", "12:00", "6", "6001")
-        self.assertEqual(8.6,(calculator.get_sun_hour([datetime(2020, 12, 25).date()])))
+        self.assertEqual(8.6, (calculator.get_sun_hour([datetime(2020, 12, 25).date()])))
 
     def test_get_day_light_length(self):
         # Test case 62 :Test if method returns correct daylight length value
@@ -316,7 +317,8 @@ class TestCalculator(unittest.TestCase):
     def test_get_cloud_cover(self):
         # Test case 63 :Test if method returns correct cloud cover values
         calculator = Calculator("100", "20", "80", "22/02/2021", "12:00", "6", "7250")
-        self.assertEqual(18, (calculator.get_cloud_cover([datetime(2021, 2, 22).date(), datetime(2021, 2, 22,17,30,0).time()])))
+        self.assertEqual(18, (
+            calculator.get_cloud_cover([datetime(2021, 2, 22).date(), datetime(2021, 2, 22, 17, 30, 0).time()])))
 
     def test_calculate_cost_alg3(self):
         # Test case 64 :Test to check if correct cost is returned when date in the past is entered
@@ -326,5 +328,7 @@ class TestCalculator(unittest.TestCase):
         # Test case 65 :Test to check if correct cost is returned when date in the past is entered
         calculator = Calculator("100", "95", "100", "25/12/2023", "05:00", "5", "6001")
         self.assertAlmostEqual(0.332, calculator.calculate_cost_alg3(), 2)
+
+
 if __name__ == '__main__':
     unittest.main()

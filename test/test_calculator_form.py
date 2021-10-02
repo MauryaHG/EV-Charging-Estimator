@@ -1,6 +1,6 @@
 import unittest
 from unittest import mock
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 
 import main
 
@@ -66,11 +66,11 @@ class TestCalculatorForm(unittest.TestCase):
 
             # Test case: Check if InitialCharge greater than 100 is given, value error is returned
             field.data = '150'
-            field.FinalCharge = 100
+            form.FinalCharge = MagicMock()
             try:
                 form.validate_InitialCharge(field)
             except ValueError as msg:
-                self.assertEqual('Final charge data error', str(msg))
+                self.assertEqual('Initial charge data error', str(msg))
 
     def test_validate_FinalCharge(self):
         """Testing for validate_FinalCharge()"""
@@ -94,6 +94,7 @@ class TestCalculatorForm(unittest.TestCase):
 
             # Test case: Check if FinalCharge less than 1 is given, value error is returned
             field.data = "0"
+            form.InitialCharge = MagicMock()
             try:
                 form.validate_FinalCharge(field)
             except ValueError as msg:
@@ -101,7 +102,30 @@ class TestCalculatorForm(unittest.TestCase):
 
     def test_validate_StartDate(self):
         """Testing for validate_StartDate()"""
-        pass
+        with main.ev_calculator_app.app_context():
+            field = Mock()
+            form = Calculator_Form()
+
+            # Test case: Check if None given as start date, validation error is returned
+            field.data = None
+            try:
+                form.validate_StartDate(field)
+            except ValidationError as msg:
+                self.assertEqual('Field data is none', str(msg))
+
+            # Test case: Check if empty string  given as start date, value error is returned
+            field.data = ''
+            try:
+                form.validate_StartDate(field)
+            except ValueError as msg:
+                self.assertEqual('Cannot fetch data', str(msg))
+
+            # Test case: Check if invalid start date is given, value error is returned
+            field.data = datetime(2002, 5, 5).date()
+            try:
+                form.validate_StartDate(field)
+            except ValueError as msg:
+                self.assertEqual('Please enter a date from 01/07/2008 onwards', str(msg))
 
     def test_validate_StartTime(self):
         """Testing for validate_StartTime()"""
@@ -122,8 +146,6 @@ class TestCalculatorForm(unittest.TestCase):
                 form.validate_StartTime(field)
             except ValueError as msg:
                 self.assertEqual('Cannot fetch data', str(msg))
-
-
 
     def test_validate_ChargerConfiguration(self):
         """Testing for validate_ChargerConfiguration()"""
@@ -178,3 +200,6 @@ class TestCalculatorForm(unittest.TestCase):
                 form.validate_PostCode(field)
             except ValueError as msg:
                 self.assertEqual('Please enter a valid Australian post code', str(msg))
+
+if __name__ == '__main__':
+    unittest.main()
